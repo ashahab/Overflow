@@ -33,6 +33,11 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <artifactId>gosu-proj</artifactId>
+            <groupId>org.gosu-lang.gosu</groupId>
+            <version>0.9-14</version>
+        </dependency>
+        <dependency>
             <groupId>org.gosu-lang.ronin</groupId>
             <artifactId>ronin</artifactId>
             <version>0.9.4</version>
@@ -89,20 +94,21 @@
             </exclusions>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>0.20.0.Beta1-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>org.gosu-lang.ronin</groupId>
             <artifactId>ronin-coffee</artifactId>
             <version>0.2</version>
         </dependency>
-
         <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <version>0.19.4</version>
-            <type>deb</type>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-community</artifactId>
+            <version>1.6.1</version>
         </dependency>
-
     </dependencies>
     <build>
         <sourceDirectory>src</sourceDirectory>

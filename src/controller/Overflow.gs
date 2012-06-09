@@ -1,4 +1,5 @@
 package controller
+uses ronin.config.*
 
 uses ronin.RoninController
 uses view.Layout
@@ -16,7 +17,10 @@ uses java.lang.Integer
 uses view.Posts
 uses javax.swing.DefaultBoundedRangeModel
 uses com.sun.tools.internal.xjc.model.Model
-
+uses org.elasticsearch.node.NodeBuilder;
+uses org.elasticsearch.client.transport.TransportClient;
+uses org.elasticsearch.common.transport.InetSocketTransportAddress;
+uses org.elasticsearch.action.index.IndexRequestBuilder
 /**
  * Created by IntelliJ IDEA.
  * User: Abin_Shahab
@@ -48,15 +52,23 @@ class Overflow extends RoninController{
     })
   }
 
-
+  private function createClient() : TransportClient{
+    var client = new TransportClient()
+        .addTransportAddress(new InetSocketTransportAddress("127.0.0.1", 9300))
+    print("created client: " + client);
+    return client
+  }
 
   function save(post : Post) {
     if(post.New) {
       post.Posted = new Timestamp(System.currentTimeMillis())
     }
     post.update()
-    //post to json
-    post.toJSON()
+
+    var client = cache(\-> createClient(), :store = APPLICATION, :name = "elasticClient")
+    var irb = client.prepareIndex("post", "post", post.Id.toString()).
+        setSource(post.toJSON());
+    irb.execute().actionGet()
     redirect(#viewPost(post))
   }
 

@@ -5,13 +5,17 @@ uses ronin.config.*
 uses ronin.console.*
 uses ronin_coffee.CoffeeFilter
 
+
 class RoninConfig extends DefaultRoninConfig {
 
+
   /* Set up your RoninConfig as you see fit */
-  construct(m : ApplicationMode, an : RoninServlet) {
+  construct(m : ApplicationMode, an : RoninServlet){
     super(m, an)
-    Filters.add( new CoffeeFilter(){ :Cache = m != DEVELOPMENT } )
+//    Filters.add( new CoffeeFilter(){ :Cache = m != DEVELOPMENT } )
     //DefaultController = controller.MyDefaultController
+//    var node = NodeBuilder.nodeBuilder().client(true).node();
+
     if(m == DEVELOPMENT) {
       AdminConsole.start()
       db.model.Database.JdbcUrl = "jdbc:h2:file:runtime/h2/devdb"
