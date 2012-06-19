@@ -3,8 +3,10 @@
 
 <html>
  <head>
- <script type="text/javascript" src="../public/jquery-1.7.1.min.js"></script>
-  <script src="http://malsup.github.com/jquery.form.js"></script>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <!-- ExtJS -->
+    <link rel="stylesheet" type="text/css" href="../public/resources/css/ext-all.css" />
+    <script type="text/javascript" src="../public/ext-all.js"></script>
    <title>${title}</title>
  </head>
  <body>

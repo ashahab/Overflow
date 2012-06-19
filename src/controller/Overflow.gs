@@ -51,8 +51,10 @@ class Overflow extends RoninController{
       EditPost.render(Writer, new Post())
     })
   }
-
-  private function createClient() : TransportClient{
+  static function getCachedClient() :TransportClient{
+    return cache(\-> createClient(), :store = APPLICATION, :name = "elasticClient");
+  }
+  private static function createClient() : TransportClient{
     var client = new TransportClient()
         .addTransportAddress(new InetSocketTransportAddress("127.0.0.1", 9300))
     print("created client: " + client);
@@ -65,8 +67,8 @@ class Overflow extends RoninController{
     }
     post.update()
 
-    var client = cache(\-> createClient(), :store = APPLICATION, :name = "elasticClient")
-    var irb = client.prepareIndex("post", "post", post.Id.toString()).
+    var client = getCachedClient()
+    var irb = client.prepareIndex("posts", "post", post.Id.toString()).
         setSource(post.toJSON());
     irb.execute().actionGet()
     redirect(#viewPost(post))

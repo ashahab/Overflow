@@ -32,6 +32,10 @@ class CommentsCx extends RoninController{
       comment.Posted = new Timestamp(System.currentTimeMillis())
       post.Comments.add(comment);
     }
+    var client = Overflow.getCachedClient()
+    var irb = client.prepareIndex("posts", "comment", comment.Id.toString()).
+        setSource(comment.toJSON());
+    irb.execute().actionGet()
     comment.update()
   }
   function deleteComment(post: Post, comment : Comment) {
