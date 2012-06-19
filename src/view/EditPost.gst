@@ -2,6 +2,7 @@
 <%@ params(aPost : db.model.Post) %>
 <% uses controller.Overflow %>
 <% uses db.model.Post %>
+<% using(target(Overflow #save(Post))) { %>
 <script type="text/javascript" >
 Ext.require([
     //'Ext.form.*',
@@ -11,7 +12,6 @@ Ext.require([
 ]);
 alert("poo before!");
 Ext.onReady(function() {
-alert("poo!");
     Ext.QuickTips.init();
 
     var bd = Ext.getBody();
@@ -20,6 +20,14 @@ alert("poo!");
 
     bd.createChild({tag: 'h2', html: 'Create a post'});
 
+    var editor = {
+            xtype: 'htmleditor',
+            name: '${n(Post#Body)}',
+            fieldLabel: '${n(Post#Body)}',
+            //value: '${h(aPost.Body)}'
+            height: 200,
+            anchor: '100%'
+        };
 
     var top = Ext.widget({
         xtype: 'form',
@@ -44,30 +52,38 @@ alert("poo!");
                 layout: 'anchor',
                 items: [{
                     xtype:'textfield',
-                    fieldLabel: 'Title',
+                    fieldLabel: '${n(Post#Title)}',
                     afterLabelTextTpl: required,
-                    name: 'first',
+                    name: '${n(Post#Title)}',
                     anchor:'95%',
-                    value: ''
+                    value: '${h(aPost.Title)}'
                 }]
             }
 			]
-        }, {
-            xtype: 'htmleditor',
-            name: 'bio',
-            fieldLabel: 'Biography',
-            height: 200,
-            anchor: '100%'
-        }],
+        }, editor],
 
         buttons: [{
-            text: 'Save'
-        },{
+            text: 'Save',
+            formBind: true,
+           handler: function() {
+                var form = this.up('postForm').getForm();
+                if(form.isValid()){
+                    form.submit({
+                        url: '${TargetURL}',
+                        waitMsg: 'Saving...',
+                        success: function(fp, o) {
+                            Ext.Msg.alert('Success', 'Your post has been saved.');
+                        }
+                    });
+                }
+            }
+          },{
             text: 'Cancel'
         }]
     });
-
+    //editor.setValue(${h(aPost.Body)}.html());
     top.render(document.body);
 
 });
 </script>
+<% } %>
