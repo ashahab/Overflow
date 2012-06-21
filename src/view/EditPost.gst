@@ -20,15 +20,14 @@ Ext.onReady(function() {
 
     bd.createChild({tag: 'h2', html: 'Create a post'});
 
-    var editor = {
+    var editor = new Ext.form.HtmlEditor({
             xtype: 'htmleditor',
             name: '${n(Post#Body)}',
             fieldLabel: '${n(Post#Body)}',
-            //value: '${h(aPost.Body)}'
             height: 200,
             anchor: '100%'
-        };
-
+        });
+    editor.setValue('${h(aPost.Body)}');
     var top = new Ext.form.FormPanel({
         standardSubmit: true,
         id: 'postForm',
@@ -78,10 +77,13 @@ Ext.onReady(function() {
                 }
             }
           },{
-            text: 'Cancel'
+            text: 'Cancel',
+            handler: function() {
+              window.location.href='${urlFor(Overflow #viewPost(aPost))}'
+            }
         }]
     });
-//    editor.setValue(${h(aPost.Body)}.html());
+
     top.render(document.body);
 
 });
