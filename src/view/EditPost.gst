@@ -10,7 +10,7 @@ Ext.require([
     //'Ext.tab.Panel'
     '*'
 ]);
-alert("poo before!");
+//alert("poo before!");
 Ext.onReady(function() {
     Ext.QuickTips.init();
 
@@ -29,8 +29,8 @@ Ext.onReady(function() {
             anchor: '100%'
         };
 
-    var top = Ext.widget({
-        xtype: 'form',
+    var top = new Ext.form.FormPanel({
+        standardSubmit: true,
         id: 'postForm',
         collapsible: true,
         frame: true,
@@ -66,7 +66,7 @@ Ext.onReady(function() {
             text: 'Save',
             formBind: true,
            handler: function() {
-                var form = this.up('postForm').getForm();
+                var form = top.getForm();
                 if(form.isValid()){
                     form.submit({
                         url: '${TargetURL}',
@@ -81,7 +81,7 @@ Ext.onReady(function() {
             text: 'Cancel'
         }]
     });
-    //editor.setValue(${h(aPost.Body)}.html());
+//    editor.setValue(${h(aPost.Body)}.html());
     top.render(document.body);
 
 });
