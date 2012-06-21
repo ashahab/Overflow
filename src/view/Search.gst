@@ -1,14 +1,78 @@
-    <%@ extends ronin.RoninTemplate %>
-<%@ params(posts : List<db.model.Post>) %>
+<%@ extends ronin.RoninTemplate %>
 <% uses controller.Overflow %>
- 
-<div class="header">All Posts</div>
-<% for(post in posts) { %>
-  <div class="postListEntry">
-    <a href="${urlFor(Overflow #viewPost(post))}">${post.Title}</a>
-    <a href="${urlFor(Overflow #delete(post))}">Delete post</a>
-  </div>
-<% } %>
+<% uses controller.Search %>
 
-<div><a href="${urlFor(Overflow #allSnippet(0))}">Snippet Views</a> </div>
-<div><a href="${urlFor(Overflow #create())}">New post</a> </div>
+<script type="text/javascript" >
+alert("pook!");
+Ext.require([
+    //'Ext.form.*',
+    //'Ext.layout.container.Column',
+    //'Ext.tab.Panel'
+    '*'
+]);
+
+Ext.onReady(function() {
+    Ext.QuickTips.init();
+
+    var bd = Ext.getBody();
+
+    var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
+
+    bd.createChild({tag: 'h2', html: 'Search posts'});
+
+    alert("puk!");
+    var top = new Ext.form.FormPanel({
+        standardSubmit: true,
+        id: 'searchForm',
+        collapsible: true,
+        frame: true,
+        title: 'Searching posts',
+        bodyPadding: '5 5 0',
+        width: 600,
+        fieldDefaults: {
+            labelAlign: 'top',
+            msgTarget: 'side'
+        },
+
+        items: [{
+            xtype: 'container',
+            anchor: '100%',
+            layout: 'hbox',
+            items:[{
+                xtype: 'container',
+                flex: 1,
+                layout: 'anchor',
+                items: [{
+                    xtype:'textfield',
+                    fieldLabel: 'Question',
+                    afterLabelTextTpl: required,
+                    name: 'question',
+                    anchor:'95%',
+                    value: ''
+                }]
+            }
+			]
+        }],
+
+        buttons: [{
+            text: 'Search',
+            formBind: true,
+           handler: function() {
+                var form = top.getForm();
+                if(form.isValid()){
+                    form.submit({
+                        url: 'poot!',
+                        waitMsg: 'Saving...',
+                        success: function(fp, o) {
+                            Ext.Msg.alert('Success', 'Your post has been saved.');
+                        }
+                    });
+                }
+            }
+          }]
+    });
+
+    top.render(document.body);
+
+});
+</script>
