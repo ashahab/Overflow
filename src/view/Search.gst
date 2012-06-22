@@ -1,9 +1,9 @@
 <%@ extends ronin.RoninTemplate %>
 <% uses controller.Overflow %>
 <% uses controller.Search %>
-
+<% uses java.lang.String %>
+<% using(target(Search #ask(String))) { %>
 <script type="text/javascript" >
-alert("pook!");
 Ext.require([
     //'Ext.form.*',
     //'Ext.layout.container.Column',
@@ -20,9 +20,9 @@ Ext.onReady(function() {
 
     bd.createChild({tag: 'h2', html: 'Search posts'});
 
-    alert("puk!");
+
     var top = new Ext.form.FormPanel({
-        standardSubmit: true,
+//        standardSubmit: true,
         id: 'searchForm',
         collapsible: true,
         frame: true,
@@ -61,11 +61,8 @@ Ext.onReady(function() {
                 var form = top.getForm();
                 if(form.isValid()){
                     form.submit({
-                        url: 'poot!',
-                        waitMsg: 'Saving...',
-                        success: function(fp, o) {
-                            Ext.Msg.alert('Success', 'Your post has been saved.');
-                        }
+                        url: '${TargetURL}',
+                        waitMsg: 'Searching...'
                     });
                 }
             }
@@ -76,3 +73,4 @@ Ext.onReady(function() {
 
 });
 </script>
+<%}%>

@@ -10,7 +10,7 @@ Ext.require([
     //'Ext.tab.Panel'
     '*'
 ]);
-//alert("poo before!");
+
 Ext.onReady(function() {
     Ext.QuickTips.init();
 
