@@ -28,6 +28,11 @@ Ext.onReady(function() {
             anchor: '100%'
         });
     editor.setValue('${h(aPost.Body)}');
+    var hidden = {
+          xtype:'hidden',
+          name: '${n(Post)}',
+          value: '${aPost.id}'
+        };
     var top = new Ext.form.FormPanel({
         standardSubmit: true,
         id: 'postForm',
@@ -59,7 +64,10 @@ Ext.onReady(function() {
                 }]
             }
 			]
-        }, editor],
+        }, editor
+        <% if(not aPost.New) { %>
+        ,hidden
+        <% } %>],
 
         buttons: [{
             text: 'Save',
