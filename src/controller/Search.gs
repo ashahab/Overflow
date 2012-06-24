@@ -42,7 +42,7 @@ class Search extends RoninController {
       view.Search.render(Writer)
     })
   }
-  function ask(question: String) {
+  function ask(question: String) : String{
     print("question: " + question);
     //make  a query to elastic search
     var client = Overflow.getCachedClient()
@@ -54,10 +54,9 @@ class Search extends RoninController {
         .execute()
         .actionGet();
     //get the answers and return
-    var docs = response.getHits().getHits();
-    for (var sd in docs) {
-      print("hit: " + sd.getSource().get("Body"))
-    }
+    print("response: " + response.Hits.toJSON());
     //print to a page nicely
+    //render to layout with the map as an input
+    return response.Hits.toJSON()
   }
 }

@@ -46,6 +46,7 @@ Ext.onReady(function() {
                     xtype:'textfield',
                     fieldLabel: 'Question',
                     afterLabelTextTpl: required,
+                    id: 'question',
                     name: 'question',
                     anchor:'95%',
                     value: ''
@@ -58,13 +59,20 @@ Ext.onReady(function() {
             text: 'Search',
             formBind: true,
            handler: function() {
-                var form = top.getForm();
-                if(form.isValid()){
-                    form.submit({
-                        url: '${TargetURL}',
-                        waitMsg: 'Searching...'
-                    });
-                }
+              Ext.Ajax.request({
+                  url: '${TargetURL}',
+                  method: 'POST',
+                  params: {question: Ext.getCmp('question').getValue()},
+                  success: function (result, request){
+                      var hits = Ext.decode(result.responseText).Hits;
+                      Ext.each(hits, function(hit) {
+                        alert(hit.Source);
+                      });
+                  },
+                  failure: function (result, request){
+                      alert('Error in server' + result.responseText);
+                  }
+              });
             }
           }]
     });
