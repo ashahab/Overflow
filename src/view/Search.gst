@@ -19,10 +19,36 @@ Ext.onReady(function() {
     var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
 
     bd.createChild({tag: 'h2', html: 'Search posts'});
+   function messagesLoaded(messages) {
+      messages.each(function(msg){
+        alert("Title: " + msg.get("Title") + " Body: " + msg.get("Body"));
+      });
+    }
+    Ext.define('SearchResult', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'Title', type: 'string'},
+        {name: 'Body',  type: 'string'}
+    ]
+    });
+    var hits = Ext.create('Ext.data.Store', {
+        model: 'SearchResult',
+        proxy: {
+            type: 'ajax',
+            url: '${TargetURL}',
+            reader: {
+                type: 'json',
+                root: 'Hits',
+                record: 'Source'
+            }
+    }
 
+    ,listeners: {
+          load: messagesLoaded
+        }
+    });
 
     var top = new Ext.form.FormPanel({
-//        standardSubmit: true,
         id: 'searchForm',
         collapsible: true,
         frame: true,
@@ -59,20 +85,7 @@ Ext.onReady(function() {
             text: 'Search',
             formBind: true,
            handler: function() {
-              Ext.Ajax.request({
-                  url: '${TargetURL}',
-                  method: 'POST',
-                  params: {question: Ext.getCmp('question').getValue()},
-                  success: function (result, request){
-                      var hits = Ext.decode(result.responseText).Hits;
-                      Ext.each(hits, function(hit) {
-                        alert(hit.Source);
-                      });
-                  },
-                  failure: function (result, request){
-                      alert('Error in server' + result.responseText);
-                  }
-              });
+              hits.load({params: {question: Ext.getCmp('question').getValue()}});
             }
           }]
     });
