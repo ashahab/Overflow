@@ -42,11 +42,11 @@ class Search extends RoninController {
       view.Search.render(Writer)
     })
   }
-  function ask(question: String) : String{
-    print("question: " + question);
+  function ask(query: String) : String{
+    print("question: " + query);
     //make  a query to elastic search
     var client = Overflow.getCachedClient()
-    var qb = QueryBuilders.queryString(question);
+    var qb = QueryBuilders.queryString(query);
     var response = client.prepareSearch({"posts"})
         .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
         .setQuery(qb)

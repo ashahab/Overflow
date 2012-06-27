@@ -19,7 +19,7 @@ Ext.onReady(function() {
     var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
 
     bd.createChild({tag: 'h2', html: 'Search posts'});
-   function messagesLoaded(messages) {
+    function messagesLoaded(messages) {
       messages.each(function(msg){
         alert("Title: " + msg.get("Title") + " Body: " + msg.get("Body"));
       });
@@ -31,7 +31,7 @@ Ext.onReady(function() {
         {name: 'Body',  type: 'string'}
     ]
     });
-    var hits = Ext.create('Ext.data.Store', {
+    var store = Ext.create('Ext.data.Store', {
         model: 'SearchResult',
         proxy: {
             type: 'ajax',
@@ -39,7 +39,8 @@ Ext.onReady(function() {
             reader: {
                 type: 'json',
                 root: 'Hits',
-                record: 'Source'
+                record: 'Source',
+                totalProperty: "totalHits"
             }
     }
 
@@ -47,7 +48,47 @@ Ext.onReady(function() {
           load: messagesLoaded
         }
     });
+    function renderResult(value, p, record){
+        var res = record.data.Title +" : "+ record.data.Body;
+        return res;
+    }
+    Ext.create('Ext.grid.Panel', {
+        border: false,
+        width: 485,
+        height: 430,
+        store: store,
+        loadMask: true,
+        columns: [{
+            header: 'Results',
+            dataIndex: 'Title',
+            width: 480,
+            renderer: renderResult
+        }],
 
+        viewConfig: {
+            forceFit:true,
+            enableRowBody:true,
+            showPreview:true,
+            getRowClass : function(record, rowIndex, p, store){
+                p.body = '<p class="excerpt">'+record.data.Body+'</p>';
+            }
+        },
+        tbar: [
+            '->',
+            new Ext.ux.form.SearchField({
+                store: store,
+                width: 200,
+                emptyText: 'Ask!'
+            })
+        ],
+        bbar: new Ext.PagingToolbar({
+            pageSize: 8,
+            store: store,
+            displayInfo: true
+        }),
+        renderTo: Ext.getBody()
+    });
+/*
     var top = new Ext.form.FormPanel({
         id: 'searchForm',
         collapsible: true,
@@ -85,13 +126,13 @@ Ext.onReady(function() {
             text: 'Search',
             formBind: true,
            handler: function() {
-              hits.load({params: {question: Ext.getCmp('question').getValue()}});
+              store.load({params: {question: Ext.getCmp('question').getValue()}});
             }
           }]
     });
 
     top.render(document.body);
-
+*/
 });
 </script>
 <%}%>
