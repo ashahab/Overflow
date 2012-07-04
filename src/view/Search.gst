@@ -1,7 +1,8 @@
-<%@ extends ronin.RoninTemplate %>
+ <%@ extends ronin.RoninTemplate %>
 <% uses controller.Overflow %>
 <% uses controller.Search %>
 <% uses java.lang.String %>
+<% uses db.model.Post %>
 <% using(target(Search #ask(String))) { %>
 <script type="text/javascript" >
 Ext.require([
@@ -19,14 +20,11 @@ Ext.onReady(function() {
     var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
 
     bd.createChild({tag: 'h2', html: 'Search posts'});
-    function messagesLoaded(messages) {
-      messages.each(function(msg){
-        alert("Title: " + msg.get("Title") + " Body: " + msg.get("Body"));
-      });
-    }
+
     Ext.define('SearchResult', {
     extend: 'Ext.data.Model',
     fields: [
+        {name: 'Id', type: 'int'},
         {name: 'Title', type: 'string'},
         {name: 'Body',  type: 'string'}
     ]
@@ -43,13 +41,13 @@ Ext.onReady(function() {
                 totalProperty: "totalHits"
             }
     }
-
-    ,listeners: {
-          load: messagesLoaded
-        }
     });
     function renderResult(value, p, record){
-        var res = record.data.Title +" : "+ record.data.Body;
+
+        var res = '<a class="link" href="/Overflow/viewPost?post='+record.data.Id+'" target="_blank">'+record.data.Title+'</a>'
+        + '<br>'
+        + Ext.util.Format.substr(record.data.Body,0,100)
+        ;
         return res;
     }
     Ext.create('Ext.grid.Panel', {
@@ -88,51 +86,6 @@ Ext.onReady(function() {
         }),
         renderTo: Ext.getBody()
     });
-/*
-    var top = new Ext.form.FormPanel({
-        id: 'searchForm',
-        collapsible: true,
-        frame: true,
-        title: 'Searching posts',
-        bodyPadding: '5 5 0',
-        width: 600,
-        fieldDefaults: {
-            labelAlign: 'top',
-            msgTarget: 'side'
-        },
-
-        items: [{
-            xtype: 'container',
-            anchor: '100%',
-            layout: 'hbox',
-            items:[{
-                xtype: 'container',
-                flex: 1,
-                layout: 'anchor',
-                items: [{
-                    xtype:'textfield',
-                    fieldLabel: 'Question',
-                    afterLabelTextTpl: required,
-                    id: 'question',
-                    name: 'question',
-                    anchor:'95%',
-                    value: ''
-                }]
-            }
-			]
-        }],
-
-        buttons: [{
-            text: 'Search',
-            formBind: true,
-           handler: function() {
-              store.load({params: {question: Ext.getCmp('question').getValue()}});
-            }
-          }]
-    });
-
-    top.render(document.body);
-*/
 });
 </script>
 <%}%>

@@ -28,6 +28,7 @@ class CommentsCx extends RoninController{
     })
   }
   function saveComment(post: Post, comment : Comment) {
+    print("comment: " + comment)
     if(comment.New) {
       comment.Posted = new Timestamp(System.currentTimeMillis())
       post.Comments.add(comment);
