@@ -23,7 +23,17 @@
             <id>sonatype</id>
             <name>Sourceforge Release Repository</name>
             <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
+        </repository><repository>
+        <id>central</id>
+        <name>Guidewire Nexus proxy for Maven Central</name>
+        <url>http://nexus/content/repositories/central</url>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <releases>
+            <enabled>true</enabled>
+        </releases>
+    </repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -35,12 +45,13 @@
         <dependency>
             <artifactId>gosu-proj</artifactId>
             <groupId>org.gosu-lang.gosu</groupId>
+            <type>pom</type>
             <version>0.9-14</version>
         </dependency>
         <dependency>
             <groupId>org.gosu-lang.ronin</groupId>
             <artifactId>ronin</artifactId>
-            <version>0.9.4</version>
+            <version>0.9.6-1</version>
         </dependency>
         <dependency>
             <groupId>org.gosu-lang.tosa</groupId>
@@ -73,13 +84,13 @@
         <dependency>
             <groupId>org.gosu-lang.ronin</groupId>
             <artifactId>ronin-init</artifactId>
-            <version>0.9.4</version>
+            <version>0.9.6-1</version>
             <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>org.gosu-lang.ronin</groupId>
             <artifactId>ronin-test</artifactId>
-            <version>0.9.4</version>
+            <version>0.9.6-1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -97,7 +108,7 @@
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
-            <version>0.20.0.Beta1-SNAPSHOT</version>
+            <version>0.19.8</version>
         </dependency>
         <dependency>
             <groupId>org.gosu-lang.ronin</groupId>

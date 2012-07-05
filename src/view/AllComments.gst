@@ -1,8 +1,8 @@
 <%@ extends ronin.RoninTemplate %>
-<%@ params(post : db.model.Post) %>
+<%@ params(post : db.model.Question) %>
 <% uses controller.CommentsCx %>
-<% uses db.model.Post %>
-<% uses db.model.Comment %>
+<% uses db.model.Question %>
+<% uses db.model.Answer %>
 <script type="text/javascript" >
 Ext.require([
     //'Ext.form.*',
@@ -12,7 +12,7 @@ Ext.require([
 ]);
 Ext.onReady(function() {
     Ext.QuickTips.init();
-    Ext.define('Comment', {
+    Ext.define('Answer', {
       extend: 'Ext.data.Model',
       fields: [
           {name: 'Name', type: 'string'},
@@ -21,17 +21,17 @@ Ext.onReady(function() {
       ]
     });
     var myStore = Ext.create('Ext.data.Store', {
-        model: 'Comment',
+        model: 'Answer',
         proxy: {
             type: 'memory'
         },
         autoDestroy: true
     });
-    <% for (comment in post.Comments) { %>
-      var record = new Comment({
-        Name: '${comment.Name}',
-        Posted: '${comment.Posted}',
-        Text: '${comment.Text}'
+    <% for (answer in post.Answers) { %>
+      var record = new Answer({
+        Author: '${answer.Author}',
+        Posted: '${answer.Posted}',
+        Text: '${answer.Text}'
       });
       myStore.add(record);
       myStore.commitChanges();
@@ -111,22 +111,22 @@ Ext.onReady(function() {
       items: [{
            text: 'Add Answers',
            handler: function () {
-               <%var aComment = new Comment();
-                aComment.Name="New Answer"
+               <%var aComment = new Answer();
+                aComment.Author="New Answer"
                 aComment.Text="Please provide a pithy answer..."%>
-               <% using(target(CommentsCx#saveComment(db.model.Post, db.model.Comment))) { %>
+               <% using(target(CommentsCx#saveComment(db.model.Question, db.model.Answer))) { %>
                        var editor = new Ext.form.HtmlEditor({
                            xtype: 'htmleditor',
-                           name: '${n(Comment#Text)}',
-                           id: '${n(Comment#Text)}',
-                           fieldLabel: '${n(Comment#Text)}',
+                           name: '${n(Answer#Text)}',
+                           id: '${n(Answer#Text)}',
+                           fieldLabel: '${n(Answer#Text)}',
                            height: 200,
                            anchor: '100%'
                           });
                       editor.setValue('${h(aComment.Text)}');
                       var hiddenPost = {
                             xtype:'hidden',
-                            name: '${n(Post)}',
+                            name: '${n(Question)}',
                             value: '${post.id}'
                           };
 
@@ -152,11 +152,11 @@ Ext.onReady(function() {
                                   layout: 'anchor',
                                   items: [{
                                       xtype:'textfield',
-                                      fieldLabel: '${n(Comment#Name)}',
-                                      name: '${n(Comment#Name)}',
-                                      id: '${n(Comment#Name)}',
+                                      fieldLabel: '${n(Answer#Author)}',
+                                      name: '${n(Answer#Author)}',
+                                      id: '${n(Answer#Author)}',
                                       anchor:'95%',
-                                      value: '${h(aComment.Name)}'
+                                      value: '${h(aComment.Author)}'
                                   }]
                               }]
                           }, editor
@@ -174,10 +174,10 @@ Ext.onReady(function() {
                                           waitMsg: 'Saving...',
                                           success: function(fp, o) {
 //                                              Ext.Msg.alert('Success', 'Your post has been saved.');
-                                              var record = Ext.create('Comment',{
-                                                  Name: Ext.getCmp('${n(Comment#Name)}').getValue(),
+                                              var record = Ext.create('Answer',{
+                                                  Author: Ext.getCmp('${n(Answer#Author)}').getValue(),
                                                   Posted: new Date(),
-                                                  Text: Ext.getCmp('${n(Comment#Text)}').getValue(),
+                                                  Text: Ext.getCmp('${n(Answer#Text)}').getValue(),
                                               });
                                               myStore.add(record);
                                               myStore.commitChanges();

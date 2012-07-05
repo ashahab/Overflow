@@ -1,10 +1,8 @@
 package controller
 
 uses ronin.RoninController
-uses db.model.Comment
-uses db.model.Post
-uses view.Posts
-uses view.EditPostComment
+uses db.model.Answer
+uses db.model.Question
 uses view.Layout
 uses java.sql.Timestamp
 uses java.lang.System
@@ -19,32 +17,25 @@ uses view.AllComments
  */
 class CommentsCx extends RoninController{
 
-  static function viewComments(post: Post){
+  static function viewComments(post: Question){
     view.AllComments.render(Writer, post)
   }
-  function createComment(post: Post) {
-    Layout.render(Writer, "Comment", \ -> {
-      EditPostComment.render(Writer, post, new Comment());
-    })
-  }
-  function saveComment(post: Post, comment : Comment) {
-    print("comment: " + comment)
-    if(comment.New) {
-      comment.Posted = new Timestamp(System.currentTimeMillis())
-      post.Comments.add(comment);
+
+  function saveComment(post: Question, answer : Answer) {
+    print("answer: " + answer)
+    if(answer.New) {
+      answer.Posted = new Timestamp(System.currentTimeMillis())
+      post.Answers.add(answer);
     }
     var client = Overflow.getCachedClient()
-    var irb = client.prepareIndex("posts", "comment", comment.Id.toString()).
-        setSource(comment.toJSON());
+    var irb = client.prepareIndex("posts", "answer", answer.Id.toString()).
+        setSource(answer.toJSON());
     irb.execute().actionGet()
-    comment.update()
+    answer.update()
   }
-  function deleteComment(post: Post, comment : Comment) {
-    comment.delete()
+  function deleteComment(post: Question, answer : Answer) {
+    answer.delete()
     redirect(overflow #viewPost(post))
   }
-  function editComment(post: Post, comment : Comment) {
-    Layout.render(Writer, "Edit Comment", \->
-        EditPostComment.render(Writer, post, comment))
-  }
+
 }

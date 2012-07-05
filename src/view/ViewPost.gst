@@ -1,5 +1,5 @@
 <%@ extends ronin.RoninTemplate %>
-<%@ params(post : db.model.Post) %>
+<%@ params(post : db.model.Question) %>
 <% uses controller.Overflow %>
 <% uses controller.CommentsCx %>
   <div class="header">${h(post.Title)}</div>

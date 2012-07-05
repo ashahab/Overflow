@@ -1,8 +1,8 @@
 <%@ extends ronin.RoninTemplate %>
-<%@ params(aPost : db.model.Post) %>
+<%@ params(aPost : db.model.Question) %>
 <% uses controller.Overflow %>
-<% uses db.model.Post %>
-<% using(target(Overflow #save(Post))) { %>
+<% uses db.model.Question %>
+<% using(target(Overflow #save(Question))) { %>
 <script type="text/javascript" >
 Ext.require([
     //'Ext.form.*',
@@ -22,15 +22,15 @@ Ext.onReady(function() {
 
     var editor = new Ext.form.HtmlEditor({
             xtype: 'htmleditor',
-            name: '${n(Post#Body)}',
-            fieldLabel: '${n(Post#Body)}',
+            name: '${n(Question#Body)}',
+            fieldLabel: '${n(Question#Body)}',
             height: 200,
             anchor: '100%'
         });
     editor.setValue('${h(aPost.Body)}');
     var hidden = {
           xtype:'hidden',
-          name: '${n(Post)}',
+          name: '${n(Question)}',
           value: '${aPost.id}'
         };
     var top = new Ext.form.FormPanel({
@@ -56,9 +56,9 @@ Ext.onReady(function() {
                 layout: 'anchor',
                 items: [{
                     xtype:'textfield',
-                    fieldLabel: '${n(Post#Title)}',
+                    fieldLabel: '${n(Question#Title)}',
                     afterLabelTextTpl: required,
-                    name: '${n(Post#Title)}',
+                    name: '${n(Question#Title)}',
                     anchor:'95%',
                     value: '${h(aPost.Title)}'
                 }]

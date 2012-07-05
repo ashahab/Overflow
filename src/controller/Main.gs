@@ -1,6 +1,6 @@
 package controller
 
-uses ronin.*
+uses ronin.RoninController
 
 /**
  * This is the default out of the box controller.  You can modify it or set a different

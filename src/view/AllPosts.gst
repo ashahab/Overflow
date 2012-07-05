@@ -1,5 +1,5 @@
 <%@ extends ronin.RoninTemplate %>
-<%@ params(posts : List<db.model.Post>) %>
+<%@ params(posts : List<db.model.Question>) %>
 <% uses controller.Overflow %>
  
 <div class="header">All Posts</div>
@@ -9,6 +9,4 @@
     <a href="${urlFor(Overflow #delete(post))}">Delete post</a>
   </div>
 <% } %>
-
-<div><a href="${urlFor(Overflow #allSnippet(0))}">Snippet Views</a> </div>
 <div><a href="${urlFor(Overflow #create())}">New post</a> </div>

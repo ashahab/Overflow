@@ -2,7 +2,7 @@
 <% uses controller.Overflow %>
 <% uses controller.Search %>
 <% uses java.lang.String %>
-<% uses db.model.Post %>
+<% uses db.model.Question %>
 <% using(target(Search #ask(String))) { %>
 <script type="text/javascript" >
 Ext.require([
