@@ -1,6 +1,7 @@
 <%@ extends ronin.RoninTemplate %>
 <%@ params(post : db.model.Question) %>
 <% uses controller.CommentsCx %>
+<% uses controller.Overflow %>
 <% uses db.model.Question %>
 <% uses db.model.Answer %>
 <script type="text/javascript" >
@@ -15,8 +16,9 @@ Ext.onReady(function() {
     Ext.define('Answer', {
       extend: 'Ext.data.Model',
       fields: [
-          {name: 'Name', type: 'string'},
-          {name: 'Posted', type: 'date'},
+          {name: 'Id', type: 'int'},
+          {name: 'Author', type: 'string'},
+          {name: 'Posted', type: 'date', format: 'm/d/Y'},
           {name: 'Text', type: 'string'}
       ]
     });
@@ -27,8 +29,9 @@ Ext.onReady(function() {
         },
         autoDestroy: true
     });
-    <% for (answer in post.Answers) { %>
+    <% for (answer in post.Answers) { print("answer: " + answer)%>
       var record = new Answer({
+        Id: '${answer.Id}',
         Author: '${answer.Author}',
         Posted: '${answer.Posted}',
         Text: '${answer.Text}'
@@ -37,42 +40,60 @@ Ext.onReady(function() {
       myStore.commitChanges();
     <% } %>
 
-    var rowEditing = Ext.create('Ext.grid.plugin.RowEditing', {
-        clicksToMoveEditor: 1,
-        autoCancel: false
-    });
 
-    var rowBodyFeature = Ext.create('Ext.grid.feature.RowBody', {
-        collectData: true,
-        getAdditionalData : function(data, rowIndex, record, orig) {
-            var headerCt = this.view.headerCt, colspan = headerCt.getColumnCount();
-            return {
-                rowBody : record.data.Text,
-                rowBodyCls : this.rowBodyCls,
-                rowBodyColspan : colspan
-            };
-        }
-    });
     Ext.create('Ext.grid.Panel', {
         border: false,
         height: 430,
         width: '95%',
         store: myStore,
         layout: 'hbox',
-//        features: [rowBodyFeature],
         columns: [
         {
+          xtype: 'actioncolumn'
+          , width: 40
+          , items: [{ // Delete button
+            icon: 'http://whatisextjs.com/BAHO/icons/cancel.png'
+            , handler: function(grid, rowIndex, colindex) {
+              // Working with grid row data
+              var record = grid.getStore().getAt(rowIndex);
+              <% using(target(CommentsCx #deleteComment(Answer))) { %>
+              Ext.Ajax.request({
+                  url: '${TargetURL}',
+                  success: function (){
+                    myStore.remove(record);
+                    myStore.commitChanges();
+                  },
+                  params: { '${n(Answer)}': record.data.Id },
+                  failure: function (){alert('Fail...');}
+              });
+              <%}%>
+            } // eo handler
+          },{ // Save Button
+            icon: 'http://whatisextjs.com/BAHO/icons/note_edit.png'
+            // style no go :(
+            , style: 'margin-left: 5px;'
+            , handler: function(grid, rowIndex, colindex) {
+              // Working with grid row data
+              var record = grid.getStore().getAt(rowIndex);
+              Ext.Msg.alert('Save', 'Save user: ' + record.data.Id);
+            } // eo handler
+          }]
+        },
+        {
             header: 'Answers',
-            dataIndex: 'Name',
+            dataIndex: 'Text',
             width: '80%',
             renderer: function (value, p, record){
-                return '<b>'+record.data.Name + '</b><br>'
+                return '<b>'+record.data.Author + '</b>'+ ' - ' + record.data.Posted + '<br>'
                 + record.data.Text;
             },
             editor: {
+                xtype: 'htmleditor',
+                height: 250,
                 allowBlank: false
-            }
+            },
         },
+
         {
             xtype: 'datecolumn',
             header: 'Posted',
@@ -89,11 +110,9 @@ Ext.onReady(function() {
         },
         {
             header: 'Answer',
-            dataIndex: 'Text',
+            dataIndex: 'Author',
             width: 800,
             editor: {
-                xtype: 'htmleditor',
-                height: 250,
                 allowBlank: false
             },
             hidden: true
@@ -112,7 +131,7 @@ Ext.onReady(function() {
            text: 'Add Answers',
            handler: function () {
                <%var aComment = new Answer();
-                aComment.Author="New Answer"
+                aComment.Author="Abin"
                 aComment.Text="Please provide a pithy answer..."%>
                <% using(target(CommentsCx#saveComment(db.model.Question, db.model.Answer))) { %>
                        var editor = new Ext.form.HtmlEditor({
@@ -172,11 +191,12 @@ Ext.onReady(function() {
                                       form.submit({
                                           url: '${TargetURL}',
                                           waitMsg: 'Saving...',
-                                          success: function(fp, o) {
+                                          success: function(form,action) {
 //                                              Ext.Msg.alert('Success', 'Your post has been saved.');
                                               var record = Ext.create('Answer',{
+                                                  Id: action.result.data.Id,
                                                   Author: Ext.getCmp('${n(Answer#Author)}').getValue(),
-                                                  Posted: new Date(),
+                                                  Posted: Ext.getCmp('${n(Answer#Posted)}').getValue(),
                                                   Text: Ext.getCmp('${n(Answer#Text)}').getValue(),
                                               });
                                               myStore.add(record);

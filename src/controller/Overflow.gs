@@ -73,7 +73,6 @@ class Overflow extends RoninController{
 
   function delete(post : Question) {
     post.delete()
-    redirect(#all())
   }
 
 

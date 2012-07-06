@@ -33,9 +33,8 @@ class CommentsCx extends RoninController{
     irb.execute().actionGet()
     answer.update()
   }
-  function deleteComment(post: Question, answer : Answer) {
+  function deleteComment(answer : Answer) {
     answer.delete()
-    redirect(overflow #viewPost(post))
   }
 
 }
