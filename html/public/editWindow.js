@@ -44,7 +44,7 @@ Ext.define('gw.stackoverflow.EventWindow', {
                 {
                     text:'Save',
                     disabled:false,
-                    handler:this.onSave,
+                    handler:function(){this.onSave(config);},
                     scope: this
                 },
                 {
@@ -63,47 +63,6 @@ Ext.define('gw.stackoverflow.EventWindow', {
         this.callParent();
 
         this.formPanel = this.items.items[0];
-
-        this.addEvents({
-            /**
-             * @event eventadd
-             * Fires after a new event is added
-             * @param {Ext.calendar.form.EventWindow} this
-             * @param {Ext.calendar.EventRecord} rec The new {@link Ext.calendar.EventRecord record} that was added
-             */
-            eventadd: true,
-            /**
-             * @event eventupdate
-             * Fires after an existing event is updated
-             * @param {Ext.calendar.form.EventWindow} this
-             * @param {Ext.calendar.EventRecord} rec The new {@link Ext.calendar.EventRecord record} that was updated
-             */
-            eventupdate: true,
-            /**
-             * @event eventdelete
-             * Fires after an event is deleted
-             * @param {Ext.calendar.form.EventWindow} this
-             * @param {Ext.calendar.EventRecord} rec The new {@link Ext.calendar.EventRecord record} that was deleted
-             */
-            eventdelete: true,
-            /**
-             * @event eventcancel
-             * Fires after an event add/edit operation is canceled by the user and no store update took place
-             * @param {Ext.calendar.form.EventWindow} this
-             * @param {Ext.calendar.EventRecord} rec The new {@link Ext.calendar.EventRecord record} that was canceled
-             */
-            eventcancel: true,
-            /**
-             * @event editdetails
-             * Fires when the user selects the option in this window to continue editing in the detailed edit form
-             * (by default, an instance of {@link Ext.calendar.EventEditForm}. Handling code should hide this window
-             * and transfer the current event record to the appropriate instance of the detailed form by showing it
-             * and calling {@link Ext.calendar.EventEditForm#loadRecord loadRecord}.
-             * @param {Ext.calendar.form.EventWindow} this
-             * @param {Ext.calendar.EventRecord} rec The {@link Ext.calendar.EventRecord record} that is currently being edited
-             */
-            editdetails: true
-        });
     },
     listeners:{
         scope:this,
@@ -117,13 +76,13 @@ Ext.define('gw.stackoverflow.EventWindow', {
          */
     },
     // private
-    onSave: function(){
+    onSave: function(config){
         if(!this.formPanel.form.isValid()){
             return;
         }
 
         this.formPanel.form.submit({
-            url:'${TargetURL}',
+            url:config.targetUrl,
             waitMsg:'Saving...',
             success:function (fp, o) {
                 Ext.Msg.alert('Success', 'Your post has been saved.');

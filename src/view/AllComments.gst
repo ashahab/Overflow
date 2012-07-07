@@ -101,7 +101,9 @@ Ext.onReady(function() {
                 hiddenAnswerId:hiddenAnswerId,
                 editor:heditor,
                 record:record,
-                targetUrl:targetUrl
+                targetUrl:targetUrl,
+                store:myStore
+
               });
               editWindow.show();
               Ext.getBody().mask();
