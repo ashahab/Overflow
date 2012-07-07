@@ -13,6 +13,7 @@ Ext.require([
 ]);
 Ext.onReady(function() {
     Ext.QuickTips.init();
+
     Ext.define('Answer', {
       extend: 'Ext.data.Model',
       fields: [
@@ -41,7 +42,7 @@ Ext.onReady(function() {
     <% } %>
 
 
-    Ext.create('Ext.grid.Panel', {
+    var gridPanel = Ext.create('Ext.grid.Panel', {
         border: false,
         height: 430,
         width: '95%',
@@ -69,13 +70,42 @@ Ext.onReady(function() {
               <%}%>
             } // eo handler
           },{ // Save Button
-            icon: 'http://whatisextjs.com/BAHO/icons/note_edit.png'
-            // style no go :(
-            , style: 'margin-left: 5px;'
-            , handler: function(grid, rowIndex, colindex) {
+              icon: 'http://whatisextjs.com/BAHO/icons/note_edit.png',
+              style: 'margin-left: 5px;',
+              handler: function(grid, rowIndex, colindex) {
+              <% using(target(CommentsCx #saveComment(Question,Answer))) { %>
               // Working with grid row data
               var record = grid.getStore().getAt(rowIndex);
-              Ext.Msg.alert('Save', 'Save user: ' + record.data.Id);
+
+              var heditor = new Ext.form.HtmlEditor({
+                  xtype: 'htmleditor',
+                  name: '${n(Answer#Text)}',
+                  fieldLabel: '${n(Answer#Text)}',
+                  height: 200,
+                  anchor: '100%'
+              });
+              heditor.setValue(record.data.Text);
+              var hiddenQuestionId = {
+                  xtype:'hidden',
+                  name: '${n(Question)}',
+                  value: '${post.id}'
+              };
+              var hiddenAnswerId = {
+                  xtype:'hidden',
+                  name: '${n(Answer)}',
+                  value: record.data.Id
+              };
+              var targetUrl = '${TargetURL}'
+              var editWindow = Ext.create("gw.stackoverflow.EventWindow",{
+                hiddenQuestionId:hiddenQuestionId,
+                hiddenAnswerId:hiddenAnswerId,
+                editor:heditor,
+                record:record,
+                targetUrl:targetUrl
+              });
+              editWindow.show();
+              Ext.getBody().mask();
+              <%}%>
             } // eo handler
           }]
         },
@@ -124,7 +154,7 @@ Ext.onReady(function() {
         },
         renderTo: document.body
     });
-    Ext.create('Ext.toolbar.Toolbar', {
+    var tBar = Ext.create('Ext.toolbar.Toolbar', {
       renderTo: document.body,
       width   : 400,
       items: [{
