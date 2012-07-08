@@ -102,8 +102,8 @@ Ext.onReady(function() {
                 editor:heditor,
                 record:record,
                 targetUrl:targetUrl,
-                store:myStore
-
+                store:myStore,
+                gridView:gridPanel.getView()
               });
               editWindow.show();
               Ext.getBody().mask();

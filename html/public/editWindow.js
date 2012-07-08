@@ -7,7 +7,7 @@
  */
 
 
-Ext.define('gw.stackoverflow.EventWindow', {
+var eWindow = Ext.define('gw.stackoverflow.EventWindow', {
     extend:'Ext.window.Window',
 
     requires:[
@@ -75,6 +75,8 @@ Ext.define('gw.stackoverflow.EventWindow', {
          }
          */
     },
+
+
     // private
     onSave: function(config){
         if(!this.formPanel.form.isValid()){
@@ -85,9 +87,12 @@ Ext.define('gw.stackoverflow.EventWindow', {
             url:config.targetUrl,
             waitMsg:'Saving...',
             success:function (fp, o) {
-                Ext.Msg.alert('Success', 'Your post has been saved.');
-//                config.record.data.Text = editor.getValue();
-//                myStore.commitChanges();
+                config.record.data.Text = config.editor.getValue();
+                config.store.commitChanges();
+                config.gridView.refresh();
+
+                Ext.getBody().unmask();
+                fp.owner.ownerCt.hide();
             }
         });
     }
