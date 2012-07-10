@@ -14,7 +14,7 @@ Ext.define('gw.stackoverflow.AddAnswers', {
     constructor:function (config) {
         this.callParent([Ext.apply({
 
-                width:400,
+                
                 items:[
                     {
                         text:'Add Answers',

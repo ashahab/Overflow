@@ -12,59 +12,7 @@ Ext.require([
 '*'
 ]);
 Ext.onReady(function() {
-
-var BasePanel = function (config) {
-
- Ext.apply(config,{items: [{
-     title: 'Search results',
-     region: 'east',
-     margins: '5 0 0 5',
-     width: 800,
-     cmargins: '5 5 0 5', // adjust top margin when collapsed
-     id: 'west-region-container',
-     layout: 'fit',
-
-     frame: true
- }, {
-       region: 'center',     // center region is required, no width/height specified
-       xtype: 'panel',
-       layout: 'fit',
-       margins: '5 5 0 0',
-       items: [{
-           xtype:'panel',
-           border: 'false',
-           layout: {
-                   type: 'vbox',
-                   align: 'stretch'
-           },
-           items:[{
-              id: 'titlePane',
-              xtype:'panel',
-              html:'<b>Title: </b>${h(post.Title)}'
-            },{
-              id: 'bodyPane',
-              xtype:'panel',
-              html:'<b>Body: </b>${h(post.Body)}'
-            },{
-              id: 'postedPane',
-              xtype:'panel',
-              html:'<b>Posted: </b>${h(post.Posted as String)}'
-            }]
-       }]
-     }]});
-        //call the base constructor
-        BasePanel.superclass.constructor.call(this, config);
-    }
-
-    Ext.extend(BasePanel, Ext.Panel, {
-        height: 100,
-        layout: 'border'
-
-    });
-    var win = new BasePanel({renderTo:document.body});
-
-
-    Ext.define('Answer', {
+ Ext.define('Answer', {
       extend: 'Ext.data.Model',
       fields: [
           {name: 'Id', type: 'int'},
@@ -80,7 +28,7 @@ var BasePanel = function (config) {
         },
         autoDestroy: true
     });
-    <% for (answer in post.Answers) {%>
+    <% for (answer in post.Answers) { print("answer: " + answer);%>
       var record = new Answer({
         Id: '${answer.Id}',
         Author: '${answer.Author}',
@@ -90,67 +38,117 @@ var BasePanel = function (config) {
       myStore.add(record);
       myStore.commitChanges();
     <% } %>
+var gridPanel = Ext.create('Ext.grid.Panel', {
+      border: false,
+      store: myStore,
+      layout: 'hbox',
+      bbar: new Ext.PagingToolbar({
+          pageSize: 8,
+          store: myStore,
+          displayInfo: true
+      }),
 
+      columns: [
+      {
+        xtype: 'actioncolumn'
+        , width: 40
+        , items: [{ // Delete button
+          icon: 'http://whatisextjs.com/BAHO/icons/cancel.png'
+          , handler:deleteAnswer
+        },{ // Save Button
+            icon: 'http://whatisextjs.com/BAHO/icons/note_edit.png',
+            style: 'margin-left: 5px;',
+            handler: editAnswer
+        }]
+      },
+      {
+          header: 'Answers',
+          dataIndex: 'Text',
+          width: '80%',
+          renderer: function (value, p, record){
+              return '<b>'+record.data.Author + '</b>'+ ' - ' + record.data.Posted + '<br>'
+              + record.data.Text;
+          },
+          editor: {
+              xtype: 'htmleditor',
+              height: 250,
+              allowBlank: false
+          },
+      }
 
-    var gridPanel = Ext.create('Ext.grid.Panel', {
-        border: false,
-        store: myStore,
-        layout: 'hbox',
-        bbar: new Ext.PagingToolbar({
-            pageSize: 8,
-            store: myStore,
-            displayInfo: true
-        }),
+     ],
 
-        columns: [
-        {
-          xtype: 'actioncolumn'
-          , width: 40
-          , items: [{ // Delete button
-            icon: 'http://whatisextjs.com/BAHO/icons/cancel.png'
-            , handler:deleteAnswer
-          },{ // Save Button
-              icon: 'http://whatisextjs.com/BAHO/icons/note_edit.png',
-              style: 'margin-left: 5px;',
-              handler: editAnswer
-          }]
-        },
-        {
-            header: 'Answers',
-            dataIndex: 'Text',
-            width: '80%',
-            renderer: function (value, p, record){
-                return '<b>'+record.data.Author + '</b>'+ ' - ' + record.data.Posted + '<br>'
-                + record.data.Text;
-            },
-            editor: {
-                xtype: 'htmleditor',
-                height: 250,
-                allowBlank: false
-            },
-        }
-
-       ],
-
-        viewConfig: {
-            forceFit:true,
-            showPreview:true
-        },
-        renderTo: document.body
+      viewConfig: {
+          forceFit:true,
+          showPreview:true
+      }
+  });
+  <% using(target(CommentsCx#saveComment(db.model.Question, db.model.Answer))) { %>
+    var answerBar = Ext.create("gw.stackoverflow.AddAnswers",{
+      answerTextFieldName: '${n(Answer#Text)}',
+      questionFieldName: '${n(Question)}',
+      answerFieldName: '${n(Answer)}',
+      authorFieldName: '${n(Answer#Author)}',
+      postId: '${post.id}',
+      targetUrl: '${TargetURL}',
+      store:myStore
     });
 
-     <% using(target(CommentsCx#saveComment(db.model.Question, db.model.Answer))) { %>
-        var answerBar = Ext.create("gw.stackoverflow.AddAnswers",{
-          answerTextFieldName: '${n(Answer#Text)}',
-          questionFieldName: '${n(Question)}',
-          answerFieldName: '${n(Answer)}',
-          authorFieldName: '${n(Answer#Author)}',
-          postId: '${post.id}',
-          targetUrl: '${TargetURL}',
-          store:myStore
-        });
-        answerBar.render(document.body);
-     <%}%>
+ <%}%>
+var BasePanel = function (config) {
+
+ Ext.apply(config,{items: [ {
+       columnWidth: .55,
+       xtype: 'panel',
+       layout: 'vbox',
+
+       margins: '5 5 0 0',
+       items: [{
+           xtype:'panel',
+           border: 'false',
+           layout: {
+                   type: 'vbox',
+                   align: 'stretch',
+                   flex:2,
+           },
+           items:[{
+              id: 'titlePane',
+              xtype:'panel',
+              html:'<b>Title: </b>${h(post.Title)}'
+            },{
+              id: 'bodyPane',
+              xtype:'panel',
+              html:'<b>Body: </b>${h(post.Body)}'
+            },{
+              id: 'postedPane',
+              xtype:'panel',
+              html:'<b>Posted: </b>${h(post.Posted as String)}'
+            },gridPanel, answerBar]
+       }]
+     },
+     {
+     title: 'Search results',
+     columnWidth: .45,
+     margins: '5 0 0 5',
+     width: 800,
+     cmargins: '5 5 0 5', // adjust top margin when collapsed
+     id: 'west-region-container',
+     layout: 'fit',
+
+     frame: true
+ }]});
+        //call the base constructor
+        BasePanel.superclass.constructor.call(this, config);
+    }
+
+    Ext.extend(BasePanel, Ext.Panel, {
+
+        layout: 'column'
+
+    });
+    var win = new BasePanel({renderTo:document.body});
+
+
 
      function editAnswer(grid, rowIndex, colindex) {
       <% using(target(CommentsCx #saveComment(Question,Answer))) { %>
