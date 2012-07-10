@@ -7,7 +7,7 @@
  */
 
 
-var eWindow = Ext.define('gw.stackoverflow.EventWindow', {
+Ext.define('gw.stackoverflow.EventWindow', {
     extend:'Ext.window.Window',
 
     requires:[
@@ -52,6 +52,7 @@ var eWindow = Ext.define('gw.stackoverflow.EventWindow', {
                     disabled:false,
                     handler:function () {
                         this.hide();
+                        Ext.getBody().unmask();
                     },
                     scope: this
                 }

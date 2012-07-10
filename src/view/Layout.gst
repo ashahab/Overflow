@@ -10,6 +10,7 @@
     <script type="text/javascript" src="../public/ext-all.js"></script>
     <script type="text/javascript" src="../public/searchfield.js"></script>
     <script type="text/javascript" src="../public/editWindow.js"></script>
+    <script type="text/javascript" src="../public/addAnswersToolbar.js"></script>
    <title>${title}</title>
  </head>
  <body>

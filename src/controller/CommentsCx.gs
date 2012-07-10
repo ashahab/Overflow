@@ -21,17 +21,18 @@ class CommentsCx extends RoninController{
     view.AllComments.render(Writer, post)
   }
 
-  function saveComment(post: Question, answer : Answer) {
-    print("answer: " + answer)
+  function saveComment(post: Question, answer : Answer):String {
     if(answer.New) {
       answer.Posted = new Timestamp(System.currentTimeMillis())
       post.Answers.add(answer);
     }
     var client = Overflow.getCachedClient()
     var irb = client.prepareIndex("posts", "answer", answer.Id.toString()).
-        setSource(answer.toJSON());
+        setSource(answer.toJSON(:depth=1, :include={answer#Posted, answer#Id, answer#Text}));
     irb.execute().actionGet()
     answer.update()
+    print("answer: " + answer.toJSON(:depth=1, :include={answer#Posted, answer#Id}).chop() + ", success:true}");
+    return answer.toJSON(:depth=1, :include={answer#Posted, answer#Id}).chop() + ", success:true}";
   }
   function deleteComment(answer : Answer) {
     answer.delete()

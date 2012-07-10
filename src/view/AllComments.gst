@@ -30,7 +30,7 @@ Ext.onReady(function() {
         },
         autoDestroy: true
     });
-    <% for (answer in post.Answers) { print("answer: " + answer)%>
+    <% for (answer in post.Answers) {%>
       var record = new Answer({
         Id: '${answer.Id}',
         Author: '${answer.Author}',
@@ -95,13 +95,13 @@ Ext.onReady(function() {
                   name: '${n(Answer)}',
                   value: record.data.Id
               };
-              var targetUrl = '${TargetURL}'
+
               var editWindow = Ext.create("gw.stackoverflow.EventWindow",{
                 hiddenQuestionId:hiddenQuestionId,
                 hiddenAnswerId:hiddenAnswerId,
                 editor:heditor,
                 record:record,
-                targetUrl:targetUrl,
+                targetUrl:'${TargetURL}',
                 store:myStore,
                 gridView:gridPanel.getView()
               });
@@ -156,100 +156,17 @@ Ext.onReady(function() {
         },
         renderTo: document.body
     });
-    var tBar = Ext.create('Ext.toolbar.Toolbar', {
-      renderTo: document.body,
-      width   : 400,
-      items: [{
-           text: 'Add Answers',
-           handler: function () {
-               <%var aComment = new Answer();
-                aComment.Author="Abin"
-                aComment.Text="Please provide a pithy answer..."%>
-               <% using(target(CommentsCx#saveComment(db.model.Question, db.model.Answer))) { %>
-                       var editor = new Ext.form.HtmlEditor({
-                           xtype: 'htmleditor',
-                           name: '${n(Answer#Text)}',
-                           id: '${n(Answer#Text)}',
-                           fieldLabel: '${n(Answer#Text)}',
-                           height: 200,
-                           anchor: '100%'
-                          });
-                      editor.setValue('${h(aComment.Text)}');
-                      var hiddenPost = {
-                            xtype:'hidden',
-                            name: '${n(Question)}',
-                            value: '${post.id}'
-                          };
-
-                      var top = new Ext.form.FormPanel({
-                          id: 'commentForm',
-                          collapsible: true,
-                          frame: true,
-                          title: 'Creating answer',
-                          bodyPadding: '5 5 0',
-                          width: 600,
-                          fieldDefaults: {
-                              labelAlign: 'top',
-                              msgTarget: 'side'
-                          },
-
-                          items: [{
-                              xtype: 'container',
-                              anchor: '100%',
-                              layout: 'hbox',
-                              items:[{
-                                  xtype: 'container',
-                                  flex: 1,
-                                  layout: 'anchor',
-                                  items: [{
-                                      xtype:'textfield',
-                                      fieldLabel: '${n(Answer#Author)}',
-                                      name: '${n(Answer#Author)}',
-                                      id: '${n(Answer#Author)}',
-                                      anchor:'95%',
-                                      value: '${h(aComment.Author)}'
-                                  }]
-                              }]
-                          }, editor
-                            ,hiddenPost
-                          ],
-
-                          buttons: [{
-                              text: 'Save',
-                              formBind: true,
-                             handler: function() {
-                                  var form = top.getForm();
-                                  if(form.isValid()){
-                                      form.submit({
-                                          url: '${TargetURL}',
-                                          waitMsg: 'Saving...',
-                                          success: function(form,action) {
-//                                              Ext.Msg.alert('Success', 'Your post has been saved.');
-                                              var record = Ext.create('Answer',{
-                                                  Id: action.result.data.Id,
-                                                  Author: Ext.getCmp('${n(Answer#Author)}').getValue(),
-                                                  Posted: Ext.getCmp('${n(Answer#Posted)}').getValue(),
-                                                  Text: Ext.getCmp('${n(Answer#Text)}').getValue(),
-                                              });
-                                              myStore.add(record);
-                                              myStore.commitChanges();
-                                              top.destroy();
-                                          }
-                                      });
-                                  }
-                              }
-                            },{
-                              text: 'Cancel',
-                              handler: function() {
-                              }
-                          }]
-                      });
-
-                      top.render(document.body);
-
-                     }
-               <% } %>
-           }]
-    });
+     <% using(target(CommentsCx#saveComment(db.model.Question, db.model.Answer))) { %>
+        var answerBar = Ext.create("gw.stackoverflow.AddAnswers",{
+          answerTextFieldName: '${n(Answer#Text)}',
+          questionFieldName: '${n(Question)}',
+          answerFieldName: '${n(Answer)}',
+          authorFieldName: '${n(Answer#Author)}',
+          postId: '${post.id}',
+          targetUrl: '${TargetURL}',
+          store:myStore
+        });
+        answerBar.render(document.body);
+     <%}%>
 });
 </script>
