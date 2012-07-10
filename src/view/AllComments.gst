@@ -12,7 +12,7 @@ Ext.require([
     '*'
 ]);
 Ext.onReady(function() {
-    Ext.QuickTips.init();
+
 
     Ext.define('Answer', {
       extend: 'Ext.data.Model',
@@ -44,71 +44,25 @@ Ext.onReady(function() {
 
     var gridPanel = Ext.create('Ext.grid.Panel', {
         border: false,
-        height: 430,
-        width: '95%',
         store: myStore,
         layout: 'hbox',
+        bbar: new Ext.PagingToolbar({
+            pageSize: 8,
+            store: myStore,
+            displayInfo: true
+        }),
+
         columns: [
         {
           xtype: 'actioncolumn'
           , width: 40
           , items: [{ // Delete button
             icon: 'http://whatisextjs.com/BAHO/icons/cancel.png'
-            , handler: function(grid, rowIndex, colindex) {
-              // Working with grid row data
-              var record = grid.getStore().getAt(rowIndex);
-              <% using(target(CommentsCx #deleteComment(Answer))) { %>
-              Ext.Ajax.request({
-                  url: '${TargetURL}',
-                  success: function (){
-                    myStore.remove(record);
-                    myStore.commitChanges();
-                  },
-                  params: { '${n(Answer)}': record.data.Id },
-                  failure: function (){alert('Fail...');}
-              });
-              <%}%>
-            } // eo handler
+            , handler:deleteAnswer
           },{ // Save Button
               icon: 'http://whatisextjs.com/BAHO/icons/note_edit.png',
               style: 'margin-left: 5px;',
-              handler: function(grid, rowIndex, colindex) {
-              <% using(target(CommentsCx #saveComment(Question,Answer))) { %>
-              // Working with grid row data
-              var record = grid.getStore().getAt(rowIndex);
-
-              var heditor = new Ext.form.HtmlEditor({
-                  xtype: 'htmleditor',
-                  name: '${n(Answer#Text)}',
-                  fieldLabel: '${n(Answer#Text)}',
-                  height: 200,
-                  anchor: '100%'
-              });
-              heditor.setValue(record.data.Text);
-              var hiddenQuestionId = {
-                  xtype:'hidden',
-                  name: '${n(Question)}',
-                  value: '${post.id}'
-              };
-              var hiddenAnswerId = {
-                  xtype:'hidden',
-                  name: '${n(Answer)}',
-                  value: record.data.Id
-              };
-
-              var editWindow = Ext.create("gw.stackoverflow.EventWindow",{
-                hiddenQuestionId:hiddenQuestionId,
-                hiddenAnswerId:hiddenAnswerId,
-                editor:heditor,
-                record:record,
-                targetUrl:'${TargetURL}',
-                store:myStore,
-                gridView:gridPanel.getView()
-              });
-              editWindow.show();
-              Ext.getBody().mask();
-              <%}%>
-            } // eo handler
+              handler: editAnswer
           }]
         },
         {
@@ -124,31 +78,9 @@ Ext.onReady(function() {
                 height: 250,
                 allowBlank: false
             },
-        },
+        }
 
-        {
-            xtype: 'datecolumn',
-            header: 'Posted',
-            dataIndex: 'Posted',
-            field: {
-                xtype: 'datefield',
-                allowBlank: false,
-                format: 'm/d/Y',
-                minValue: '01/01/2006',
-                minText: 'Cannot have a start date before the company existed!',
-                maxValue: Ext.Date.format(new Date(), 'm/d/Y')
-            },
-            hidden: true
-        },
-        {
-            header: 'Answer',
-            dataIndex: 'Author',
-            width: 800,
-            editor: {
-                allowBlank: false
-            },
-            hidden: true
-        }],
+       ],
 
         viewConfig: {
             forceFit:true,
@@ -156,6 +88,7 @@ Ext.onReady(function() {
         },
         renderTo: document.body
     });
+
      <% using(target(CommentsCx#saveComment(db.model.Question, db.model.Answer))) { %>
         var answerBar = Ext.create("gw.stackoverflow.AddAnswers",{
           answerTextFieldName: '${n(Answer#Text)}',
@@ -168,5 +101,39 @@ Ext.onReady(function() {
         });
         answerBar.render(document.body);
      <%}%>
+
+     function editAnswer(grid, rowIndex, colindex) {
+      <% using(target(CommentsCx #saveComment(Question,Answer))) { %>
+      // Working with grid row data
+
+      var editWindow = Ext.create("gw.stackoverflow.EventWindow",{
+        answerTextFieldName: '${n(Answer#Text)}',
+        questionFieldName: '${n(Question)}',
+        answerFieldName: '${n(Answer)}',
+        record:grid.getStore().getAt(rowIndex),
+        targetUrl:'${TargetURL}',
+        store:myStore,
+        gridView:gridPanel.getView()
+      });
+      editWindow.show();
+      Ext.getBody().mask();
+      <%}%>
+    } // eo handler
+
+    function deleteAnswer(grid, rowIndex, colindex) {
+      // Working with grid row data
+      var record = grid.getStore().getAt(rowIndex);
+      <% using(target(CommentsCx #deleteComment(Answer))) { %>
+      Ext.Ajax.request({
+          url: '${TargetURL}',
+          success: function (){
+            myStore.remove(record);
+            myStore.commitChanges();
+          },
+          params: { '${n(Answer)}': record.data.Id },
+          failure: function (){alert('Fail...');}
+      });
+      <%}%>
+    } // eo handler
 });
 </script>

@@ -15,6 +15,24 @@ Ext.define('gw.stackoverflow.EventWindow', {
     ],
 
     constructor:function (config) {
+        var editor = new Ext.form.HtmlEditor({
+            xtype: 'htmleditor',
+            name: config.answerTextFieldName,
+            fieldLabel: 'Text',
+            height: 200,
+            anchor: '100%'
+        });
+        editor.setValue(config.record.data.Text);
+        var hiddenQuestionId = {
+            xtype:'hidden',
+            name: config.questionFieldName,
+            value: config.postId
+        };
+        var hiddenAnswerId = {
+            xtype:'hidden',
+            name: config.answerFieldName,
+            value: config.record.data.Id
+        };
         var formPanelCfg = {
             xtype:'form',
             fieldDefaults:{
@@ -25,8 +43,9 @@ Ext.define('gw.stackoverflow.EventWindow', {
             bodyStyle:'background:transparent;padding:5px 10px 10px;',
             bodyBorder:false,
             border:false,
-            items:[config.editor, config.hiddenAnswerId, config.hiddenQuestionId]
+            items:[editor, hiddenAnswerId, hiddenQuestionId]
         };
+        config.editor = editor;
         this.callParent([Ext.apply({
             title:'Edit answer',
             width:600,
@@ -70,11 +89,6 @@ Ext.define('gw.stackoverflow.EventWindow', {
         "close":function () {
             Ext.getBody().unmask();
         }
-        /*
-         "blur" : function(){
-         this.focus()
-         }
-         */
     },
 
 
