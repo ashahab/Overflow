@@ -28,13 +28,17 @@ class CommentsCx extends RoninController{
     }
     var client = Overflow.getCachedClient()
     var irb = client.prepareIndex("posts", "answer", answer.Id.toString()).
-        setSource(answer.toJSON(:depth=1, :include={answer#Posted, answer#Id, answer#Text}));
+        setSource(answer.toJSON(:depth=1, :include={answer#Id, answer#Posted, answer#Id, answer#Text}));
     irb.execute().actionGet()
     answer.update()
     print("answer: " + answer.toJSON(:depth=1, :include={answer#Posted, answer#Id}).chop() + ", success:true}");
     return answer.toJSON(:depth=1, :include={answer#Posted, answer#Id}).chop() + ", success:true}";
   }
   function deleteComment(answer : Answer) {
+    var client = Overflow.getCachedClient()
+    var response = client.prepareDelete("twitter", "tweet", "1")
+        .execute()
+        .actionGet();
     answer.delete()
   }
 

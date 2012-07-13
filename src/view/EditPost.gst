@@ -20,10 +20,10 @@ Ext.onReady(function() {
 
     bd.createChild({tag: 'h2', html: 'Create a post'});
 
-    var editor = new Ext.form.HtmlEditor({
+    var editor = new Ext.form.field.HtmlEditor({
             xtype: 'htmleditor',
             name: '${n(Question#Body)}',
-            fieldLabel: '${n(Question#Body)}',
+            fieldLabel: 'Description',
             height: 200,
             anchor: '100%'
         });
@@ -45,7 +45,9 @@ Ext.onReady(function() {
             labelAlign: 'top',
             msgTarget: 'side'
         },
-
+//        beforeAction: function(action){
+//          editor.setValue(Ext.htmlEncode(editor.getValue()));
+//        },
         items: [{
             xtype: 'container',
             anchor: '100%',

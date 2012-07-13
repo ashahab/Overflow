@@ -18,6 +18,7 @@ uses org.elasticsearch.node.NodeBuilder;
 uses org.elasticsearch.client.transport.TransportClient;
 uses org.elasticsearch.common.transport.InetSocketTransportAddress;
 uses org.elasticsearch.action.index.IndexRequestBuilder
+uses org.apache.commons.lang3.StringEscapeUtils;
 /**
  * Created by IntelliJ IDEA.
  * User: Abin_Shahab
@@ -62,16 +63,22 @@ class Overflow extends RoninController{
     if(post.New) {
       post.Posted = new Timestamp(System.currentTimeMillis())
     }
+    post.Title = StringEscapeUtils.escapeEcmaScript(post.Title);
+    post.Body = StringEscapeUtils.escapeEcmaScript(post.Body);
     post.update()
 
     var client = getCachedClient()
     var irb = client.prepareIndex("posts", "post", post.Id.toString()).
-        setSource(post.toJSON());
+        setSource(post.toJSON(:depth=1, :include={post#Id, post#Title, post#Body, post#Posted}));
     irb.execute().actionGet()
     redirect(#viewPost(post))
   }
 
   function delete(post : Question) {
+    var client = getCachedClient()
+    var response = client.prepareDelete("posts", "post", post.Id.toString())
+        .execute()
+        .actionGet();
     post.delete()
   }
 

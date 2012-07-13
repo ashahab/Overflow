@@ -1,6 +1,7 @@
 <%@ extends ronin.RoninTemplate %>
 <%@ params(post: db.model.Question) %>
 <%uses controller.Overflow %>
+<% uses controller.Search %>
 <% uses controller.CommentsCx %>
 <% uses db.model.Question %>
 <% uses db.model.Answer %>
@@ -95,6 +96,12 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
     });
 
  <%}%>
+var searchPanel = Ext.create("gw.stackoverflow.RelatedResults",{
+<% using(target(Search #getRelated(String))) { %>
+  targetUrl:'${TargetURL}?query=${post.Title}&id=${post.Id}'
+  <%}%>
+});
+var postBody = Ext.htmlDecode('${h(post.Body)}')
 var BasePanel = function (config) {
 
  Ext.apply(config,{items: [ {
@@ -118,25 +125,14 @@ var BasePanel = function (config) {
             },{
               id: 'bodyPane',
               xtype:'panel',
-              html:'<b>Body: </b>${h(post.Body)}'
+              html:postBody
             },{
               id: 'postedPane',
               xtype:'panel',
               html:'<b>Posted: </b>${h(post.Posted as String)}'
             },gridPanel, answerBar]
        }]
-     },
-     {
-     title: 'Search results',
-     columnWidth: .45,
-     margins: '5 0 0 5',
-     width: 800,
-     cmargins: '5 5 0 5', // adjust top margin when collapsed
-     id: 'west-region-container',
-     layout: 'fit',
-
-     frame: true
- }]});
+     },searchPanel]});
         //call the base constructor
         BasePanel.superclass.constructor.call(this, config);
     }

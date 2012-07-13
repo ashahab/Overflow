@@ -120,6 +120,10 @@
             <artifactId>neo4j-community</artifactId>
             <version>1.6.1</version>
         </dependency>
+        <dependency><groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.1</version>
+        </dependency>
     </dependencies>
     <build>
         <sourceDirectory>src</sourceDirectory>

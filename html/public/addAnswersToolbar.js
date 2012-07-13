@@ -14,7 +14,7 @@ Ext.define('gw.stackoverflow.AddAnswers', {
     constructor:function (config) {
         this.callParent([Ext.apply({
 
-                
+
                 items:[
                     {
                         text:'Add Answers',
@@ -97,7 +97,15 @@ Ext.define('gw.stackoverflow.AddAnswers', {
                                                         top.destroy();
                                                     },
                                                     failure: function(form, action){
-                                                        alert("the sky is falling!");
+                                                        var record = Ext.create('Answer', {
+                                                            Id:action.result.Id,
+                                                            Posted:action.result.Posted,
+                                                            Author:Ext.getCmp(config.authorFieldName).getValue(),
+                                                            Text:Ext.getCmp(config.answerTextFieldName).getValue()
+                                                        });
+                                                        config.store.add(record);
+                                                        config.store.commitChanges();
+                                                        top.destroy();
                                                     }
                                                 });
                                             }

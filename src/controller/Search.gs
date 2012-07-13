@@ -56,4 +56,23 @@ class Search extends RoninController {
     //render to layout with the map as an input
     return response.Hits.toJSON()
   }
+
+  function getRelated(query: String, id:String) : String{
+    print("question: " + query);
+    //make  a query to elastic search
+    var client = Overflow.getCachedClient()
+    var qb = QueryBuilders.queryString(query);
+    var filteredQuery = QueryBuilders.filtered(qb, FilterBuilders.notFilter(FilterBuilders.idsFilter({"post"}).addIds({id})))
+    var response = client.prepareSearch({"posts"})
+        .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+        .setQuery(filteredQuery)
+        .setFrom(0).setSize(60)
+        .execute()
+        .actionGet();
+    //get the answers and return
+    print("response: " + response.Hits.toJSON());
+    //print to a page nicely
+    //render to layout with the map as an input
+    return response.Hits.toJSON()
+  }
 }
