@@ -29,7 +29,7 @@ Ext.onReady(function() {
         },
         autoDestroy: true
     });
-    <% for (answer in post.Answers) { print("answer: " + answer);%>
+    <% for (answer in post.Answers) {%>
       var record = new Answer({
         Id: '${answer.Id}',
         Author: '${answer.Author}',
@@ -143,10 +143,7 @@ var BasePanel = function (config) {
 
     });
     var win = new BasePanel({renderTo:document.body});
-
-
-
-     function editAnswer(grid, rowIndex, colindex) {
+      function editAnswer(grid, rowIndex, colindex) {
       <% using(target(CommentsCx #saveComment(Question,Answer))) { %>
       // Working with grid row data
 

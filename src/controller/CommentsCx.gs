@@ -7,7 +7,7 @@ uses view.Layout
 uses java.sql.Timestamp
 uses java.lang.System
 uses view.AllComments
-
+uses org.apache.commons.lang3.StringEscapeUtils;
 /**
  * Created by IntelliJ IDEA.
  * User: Abin_Shahab
@@ -22,21 +22,22 @@ class CommentsCx extends RoninController{
   }
 
   function saveComment(post: Question, answer : Answer):String {
+    answer.Text = StringEscapeUtils.escapeEcmaScript(answer.Text);
     if(answer.New) {
       answer.Posted = new Timestamp(System.currentTimeMillis())
       post.Answers.add(answer);
     }
     var client = Overflow.getCachedClient()
     var irb = client.prepareIndex("posts", "answer", answer.Id.toString()).
-        setSource(answer.toJSON(:depth=1, :include={answer#Id, answer#Posted, answer#Id, answer#Text}));
+        setSource(answer.toJSON(:depth=1, :include={answer#Id, answer#Posted, answer#Author, answer#Text}));
     irb.execute().actionGet()
+    print("answer: " + answer)
     answer.update()
-    print("answer: " + answer.toJSON(:depth=1, :include={answer#Posted, answer#Id}).chop() + ", success:true}");
     return answer.toJSON(:depth=1, :include={answer#Posted, answer#Id}).chop() + ", success:true}";
   }
   function deleteComment(answer : Answer) {
     var client = Overflow.getCachedClient()
-    var response = client.prepareDelete("twitter", "tweet", "1")
+    var response = client.prepareDelete("posts", "answer", answer.Id.toString())
         .execute()
         .actionGet();
     answer.delete()

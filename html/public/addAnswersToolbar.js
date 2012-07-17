@@ -7,124 +7,79 @@
  */
 
 Ext.define('gw.stackoverflow.AddAnswers', {
-    extend:'Ext.toolbar.Toolbar',
-    requires:[
-        'Ext.form.Panel'
-    ],
-    constructor:function (config) {
-        this.callParent([Ext.apply({
+    extend:'Ext.form.Panel',
+    frame:true,
+    title:'Creating answer',
+    bodyPadding:'5 5 0',
+    fieldDefaults:{
+        labelAlign:'top',
+        msgTarget:'side'
+    },
 
-
-                items:[
-                    {
-                        text:'Add Answers',
-                        handler:function () {
-
-                            var editor = new Ext.form.HtmlEditor({
-                                xtype:'htmleditor',
-                                name:config.answerTextFieldName,
-                                id:config.answerTextFieldName,
-                                fieldLabel:'Answer',
-                                height:200,
-                                anchor:'100%'
-                            });
-                            editor.setValue("Please provide a pithy answer...");
-                            var hiddenPost = {
-                                xtype:'hidden',
-                                name:config.questionFieldName,
-                                value:config.postId
-                            };
-
-                            var top = new Ext.form.FormPanel({
-                                id:'commentForm',
-                                collapsible:true,
-                                frame:true,
-                                title:'Creating answer',
-                                bodyPadding:'5 5 0',
-                                width:600,
-                                fieldDefaults:{
-                                    labelAlign:'top',
-                                    msgTarget:'side'
-                                },
-
-                                items:[
-                                    {
-                                        xtype:'container',
-                                        anchor:'100%',
-                                        layout:'hbox',
-                                        items:[
-                                            {
-                                                xtype:'container',
-                                                flex:1,
-                                                layout:'anchor',
-                                                items:[
-                                                    {
-                                                        xtype:'textfield',
-                                                        fieldLabel:'Author',
-                                                        name:config.authorFieldName,
-                                                        id:config.authorFieldName,
-                                                        anchor:'95%',
-                                                        value:'Abin'
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    },
-                                    editor
-                                    ,
-                                    hiddenPost
-                                ],
-
-                                buttons:[
-                                    {
-                                        text:'Save',
-                                        formBind:true,
-                                        handler:function () {
-                                            var form = top.getForm();
-                                            if (form.isValid()) {
-                                                form.submit({
-                                                    url:config.targetUrl,
-                                                    waitMsg:'Saving...',
-                                                    success:function (form, action) {
-                                                        var record = Ext.create('Answer', {
-                                                            Id:action.result.Id,
-                                                            Posted:action.result.Posted,
-                                                            Author:Ext.getCmp(config.authorFieldName).getValue(),
-                                                            Text:Ext.getCmp(config.answerTextFieldName).getValue()
-                                                        });
-                                                        config.store.add(record);
-                                                        config.store.commitChanges();
-                                                        top.destroy();
-                                                    },
-                                                    failure: function(form, action){
-                                                        var record = Ext.create('Answer', {
-                                                            Id:action.result.Id,
-                                                            Posted:action.result.Posted,
-                                                            Author:Ext.getCmp(config.authorFieldName).getValue(),
-                                                            Text:Ext.getCmp(config.answerTextFieldName).getValue()
-                                                        });
-                                                        config.store.add(record);
-                                                        config.store.commitChanges();
-                                                        top.destroy();
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    },
-                                    {
-                                        text:'Cancel',
-                                        handler:function () {
-                                            top.destroy();
-                                        }
-                                    }
-                                ]
-                            });
-
-                            top.render(document.body);
-
-                        }
-                    }
-                ]},
-            config)]);
+    initComponent:function () {
+        this.editor = new Ext.form.field.HtmlEditor({
+            name:this.answerTextFieldName,
+            id:this.answerTextFieldName,
+            fieldLabel:'Answer',
+            anchor:'100%',
+            layout:'fit'
+        });
+        this.items = [
+            {
+                xtype:'hidden',
+                name:this.authorFieldName,
+                id:this.authorFieldName,
+                value:'Abin'
+            },
+            this.editor,
+            {
+                xtype:'hidden',
+                name:this.questionFieldName,
+                value:this.postId
+            }
+        ];
+        this.bbar =
+            [{
+                text:'Post your answer',
+                formBind:true,
+                scope: this,
+                handler:this.onSave
+            }
+        ];
+        this.callParent(arguments);
+    },
+    onSave: function () {
+        var myForm = this.getForm();
+        if (myForm.isValid()) {
+            myForm.submit({
+                url:this.targetUrl,
+                waitMsg:'Saving...',
+                success:function(form, action){
+                    var record = Ext.create('Answer', {
+                        Id:action.result.Id,
+                        Posted:action.result.Posted,
+                        Author:Ext.getCmp(form.authorFieldName).value,
+                        Text:Ext.getCmp(form.answerTextFieldName).value
+                    });
+                    form.store.add(record);
+                    form.store.commitChanges();
+                    form.owner.editor.setValue("");
+                },
+                failure:function(form, action){
+                    var record = Ext.create('Answer', {
+                        Id:action.result.Id,
+                        Posted:action.result.Posted,
+                        Author:Ext.getCmp(form.authorFieldName).value,
+                        Text:Ext.getCmp(form.answerTextFieldName).value
+                    });
+                    form.store.add(record);
+                    form.store.commitChanges();
+                    form.owner.editor.setValue("");
+                }
+            });
+        }
+    },
+    onCancel: function () {
+        this.destroy();
     }
 });
