@@ -42,7 +42,7 @@ Ext.onReady(function() {
 var gridPanel = Ext.create('Ext.grid.Panel', {
       border: false,
       store: myStore,
-      layout: 'hbox',
+      layout: 'vbox',
       bbar: new Ext.PagingToolbar({
           pageSize: 8,
           store: myStore,
@@ -65,7 +65,9 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
       {
           header: 'Answers',
           dataIndex: 'Text',
-          width: '80%',
+//          width: '80%',
+          forceFit:true,
+          flex: 1,
           renderer: function (value, p, record){
               return '<b>'+record.data.Author + '</b>'+ ' - ' + record.data.Posted + '<br>'
               + record.data.Text;
@@ -79,10 +81,8 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
 
      ],
 
-      viewConfig: {
-          forceFit:true,
-          showPreview:true
-      }
+
+//     forceFit:true
   });
   <% using(target(CommentsCx#saveComment(db.model.Question, db.model.Answer))) { %>
     var answerBar = Ext.create("gw.stackoverflow.AddAnswers",{
@@ -97,6 +97,7 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
 
  <%}%>
 var searchPanel = Ext.create("gw.stackoverflow.RelatedResults",{
+columnWidth: .25,
 <% using(target(Search #getRelated(String))) { %>
   targetUrl:'${TargetURL}?query=${post.Title}&id=${post.Id}'
   <%}%>
@@ -105,19 +106,17 @@ var postBody = Ext.htmlDecode('${h(post.Body)}')
 var BasePanel = function (config) {
 
  Ext.apply(config,{items: [ {
-       columnWidth: .55,
+       columnWidth: .75,
        xtype: 'panel',
-       layout: 'vbox',
+       layout: {
+          type:'vbox',
+          align:'stretch'
+       },
 
        margins: '5 5 0 0',
        items: [{
            xtype:'panel',
            border: 'false',
-           layout: {
-                   type: 'vbox',
-                   align: 'stretch',
-                   flex:2,
-           },
            items:[{
               id: 'titlePane',
               xtype:'panel',

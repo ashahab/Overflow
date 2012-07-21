@@ -47,8 +47,6 @@ Ext.define('gw.stackoverflow.RelatedResults', {
         }
 
         this.callParent([Ext.apply({
-                title: 'Related results',
-                columnWidth: .45,
                 layout: 'fit',
                 frame: true,
                 items:Ext.create('Ext.grid.Panel', {

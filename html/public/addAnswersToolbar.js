@@ -10,7 +10,7 @@ Ext.define('gw.stackoverflow.AddAnswers', {
     extend:'Ext.form.Panel',
     frame:true,
     title:'Creating answer',
-    bodyPadding:'5 5 0',
+
     fieldDefaults:{
         labelAlign:'top',
         msgTarget:'side'
