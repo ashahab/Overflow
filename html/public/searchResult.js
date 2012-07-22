@@ -34,7 +34,7 @@ Ext.define('gw.stackoverflow.RelatedResults', {
                     totalProperty:"totalHits"
                 }
             },
-            autoLoad: true
+            autoLoad: config.autoload
         });
 
         function renderResult(value, p, record) {
@@ -44,8 +44,16 @@ Ext.define('gw.stackoverflow.RelatedResults', {
                     + Ext.util.Format.substr(record.data.Body, 0, 100)
                 ;
             return res;
-        }
+        };
 
+        var searchField = new Ext.ux.form.SearchField({
+            store: store,
+            width: 300,
+            emptyText: 'Ask!'
+        });
+        if(!config.search){
+            searchField = null;
+        }
         this.callParent([Ext.apply({
                 layout: 'fit',
                 frame: true,
@@ -57,7 +65,9 @@ Ext.define('gw.stackoverflow.RelatedResults', {
                     loadMask:true,
                     columns:[
                         {
-                            width: "100%",
+                            forceFit:true,
+                            flex: 1,
+//                            width: "100%",
                             header:'Results',
                             dataIndex:'Title',
                             renderer:renderResult
@@ -76,6 +86,8 @@ Ext.define('gw.stackoverflow.RelatedResults', {
                         store:store,
                         displayInfo:true
                     }),
+
+                    tbar:searchField,
                     renderTo:Ext.getBody()
                 })},
             config)]);

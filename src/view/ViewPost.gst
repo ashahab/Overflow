@@ -80,9 +80,6 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
       }
 
      ],
-
-
-//     forceFit:true
   });
   <% using(target(CommentsCx#saveComment(db.model.Question, db.model.Answer))) { %>
     var answerBar = Ext.create("gw.stackoverflow.AddAnswers",{
@@ -98,6 +95,7 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
  <%}%>
 var searchPanel = Ext.create("gw.stackoverflow.RelatedResults",{
 columnWidth: .25,
+autoload:true,
 <% using(target(Search #getRelated(String))) { %>
   targetUrl:'${TargetURL}?query=${post.Title}&id=${post.Id}'
   <%}%>
