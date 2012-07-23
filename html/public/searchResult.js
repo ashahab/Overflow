@@ -59,7 +59,7 @@ Ext.define('gw.stackoverflow.RelatedResults', {
                 frame: true,
                 items:Ext.create('Ext.grid.Panel', {
                     border:false,
-
+//                    forceFit:true,
                     height:430,
                     store:store,
                     loadMask:true,

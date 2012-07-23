@@ -51,7 +51,7 @@ class Search extends RoninController {
         .execute()
         .actionGet();
     //get the answers and return
-    print("response: " + response.Hits.toJSON());
+//    print("response: " + response.Hits.toJSON());
     //print to a page nicely
     //render to layout with the map as an input
     return response.Hits.toJSON()
@@ -64,13 +64,15 @@ class Search extends RoninController {
     var qb = QueryBuilders.queryString(query);
     var filteredQuery = QueryBuilders.filtered(qb, FilterBuilders.notFilter(FilterBuilders.idsFilter({"post"}).addIds({id})))
     var response = client.prepareSearch({"posts"})
-        .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
         .setQuery(filteredQuery)
+        .setTypes({"post"})
+//        .addFields({"Id", "Posted", "Title"})
         .setFrom(0).setSize(60)
         .execute()
         .actionGet();
     //get the answers and return
-    print("response: " + response.Hits.toJSON());
+    print("count " + response.Hits.Count)
+    print("filtered response: " + response);
     //print to a page nicely
     //render to layout with the map as an input
     return response.Hits.toJSON()
