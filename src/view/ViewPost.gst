@@ -19,7 +19,8 @@ Ext.onReady(function() {
           {name: 'Id', type: 'int'},
           {name: 'Author', type: 'string'},
           {name: 'Posted', type: 'date', format: 'm/d/Y'},
-          {name: 'Text', type: 'string'}
+          {name: 'Text', type: 'string'},
+          {name: 'Answered', type: 'boolean'},
       ]
     });
     var myStore = Ext.create('Ext.data.Store', {
@@ -34,7 +35,8 @@ Ext.onReady(function() {
         Id: '${answer.Id}',
         Author: '${answer.Author}',
         Posted: '${answer.Posted}',
-        Text: '${answer.Text}'
+        Text: '${answer.Text}',
+        Answered: '${answer.Answered}',
       });
       myStore.add(record);
       myStore.commitChanges();
@@ -58,6 +60,10 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
           , handler:deleteAnswer
         },{ // Save Button
             icon: 'http://whatisextjs.com/BAHO/icons/note_edit.png',
+            style: 'margin-left: 5px;',
+            handler: editAnswer
+        },{ // Save Button
+            icon: 'http://whatisextjs.com/BAHO/icons/tick.png',
             style: 'margin-left: 5px;',
             handler: editAnswer
         }]
@@ -158,6 +164,23 @@ var BasePanel = function (config) {
       <%}%>
     } // eo handler
 
+    function markAnswered(grid, rowIndex, colindex) {
+      var record = grid.getStore().getAt(rowIndex);
+
+      <% using(target(CommentsCx #markAnswered(Answer))) { %>
+      Ext.Ajax.request({
+          url: '${TargetURL}',
+          success: function (){
+            record.data.Answered = true;
+            myStore.commitChanges();
+            grid.getView().refresh();
+            this.destroy();
+          },
+          params: { '${n(Answer)}': record.data.Id },
+          failure: function (){alert('Fail...');}
+      });
+      <%}%>
+    }
     function deleteAnswer(grid, rowIndex, colindex) {
       // Working with grid row data
       var record = grid.getStore().getAt(rowIndex);

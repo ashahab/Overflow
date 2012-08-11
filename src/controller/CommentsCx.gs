@@ -8,6 +8,7 @@ uses java.sql.Timestamp
 uses java.lang.System
 uses view.AllComments
 uses org.apache.commons.lang3.StringEscapeUtils;
+uses org.elasticsearch.action.update.UpdateRequestBuilder;
 /**
  * Created by IntelliJ IDEA.
  * User: Abin_Shahab
@@ -43,4 +44,14 @@ class CommentsCx extends RoninController{
     answer.delete()
   }
 
+    function markAnswered(answer : Answer) {
+      answer.Answered = true;
+      var client = Overflow.getCachedClient()
+      var response = client.prepareUpdate("posts", "answer", answer.Id.toString())
+        .setScript("ctx._source.Answered = true")
+        .execute()
+        .actionGet();
+      answer.update();
+
+    }
 }

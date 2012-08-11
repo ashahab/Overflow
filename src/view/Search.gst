@@ -14,11 +14,21 @@ Ext.require([
 
 Ext.onReady(function() {
     Ext.QuickTips.init();
-    var bd = Ext.getBody();
 
-    var required = '<span style="color:red;font-weight:bold" data-qtip="Required">*</span>';
-
-    bd.createChild({tag: 'h2', html: 'Search posts'});
+    var tb = Ext.create('Ext.toolbar.Toolbar', {renderTo:document.body});
+    tb.add(
+    {
+              id: 'titlePane',
+              xtype:'panel',
+              html:'<h2>Search posts</h2>'
+            },
+    {
+            text:'Add new Post',
+            xtype: 'button',
+            handler: function(){
+               document.location.href = '${urlFor(Overflow #create())}';
+            }
+        });
     Ext.create("gw.stackoverflow.RelatedResults",{
       search: true,
       targetUrl:'${TargetURL}'

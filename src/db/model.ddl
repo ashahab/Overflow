@@ -26,5 +26,6 @@ CREATE TABLE "Question"(
        "Question_id" BIGINT,
        "Text" TEXT,
        "Author" VARCHAR(255),
-       "Posted" TIMESTAMP
+       "Posted" TIMESTAMP,
+       "Answered" BOOLEAN
   );
