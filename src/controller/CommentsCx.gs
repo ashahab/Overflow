@@ -32,7 +32,6 @@ class CommentsCx extends RoninController{
     var irb = client.prepareIndex("posts", "answer", answer.Id.toString()).
         setSource(answer.toJSON(:depth=1, :include={answer#Id, answer#Posted, answer#Author, answer#Text}));
     irb.execute().actionGet()
-    print("answer: " + answer)
     answer.update()
     return answer.toJSON(:depth=1, :include={answer#Posted, answer#Id}).chop() + ", success:true}";
   }
@@ -44,14 +43,22 @@ class CommentsCx extends RoninController{
     answer.delete()
   }
 
-    function markAnswered(answer : Answer) {
-      answer.Answered = true;
-      var client = Overflow.getCachedClient()
-      var response = client.prepareUpdate("posts", "answer", answer.Id.toString())
-        .setScript("ctx._source.Answered = true")
+  function markAnswer(answer: Answer, marked: boolean){
+    answer.Answered = marked;
+    var client = Overflow.getCachedClient()
+    var response = client.prepareUpdate("posts", "answer", answer.Id.toString())
+        .setScript("ctx._source.Answered = " + marked)
         .execute()
         .actionGet();
-      answer.update();
+    answer.update();
+  }
+    function markAnswered(answer : Answer): String {
+      //mark every answer as "false"
+      for(ans in answer.Question.Answers){
+       markAnswer(ans, false);
+      }
+      markAnswer(answer, true);
 
+      return answer.toJSON(:depth=1, :include={answer#Posted, answer#Id}).chop() + ", success:true}";
     }
 }

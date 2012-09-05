@@ -59,19 +59,20 @@ class Overflow extends RoninController{
     return client
   }
 
-  function save(post : Question) {
+  function save(post : Question) :String {
     if(post.New) {
       post.Posted = new Timestamp(System.currentTimeMillis())
     }
     post.Title = StringEscapeUtils.escapeEcmaScript(post.Title);
     post.Body = StringEscapeUtils.escapeEcmaScript(post.Body);
     post.update()
-
+    var json = post.toJSON(:depth=1, :include={post#Id, post#Title, post#Body, post#Posted});
     var client = getCachedClient()
     var irb = client.prepareIndex("posts", "post", post.Id.toString()).
-        setSource(post.toJSON(:depth=1, :include={post#Id, post#Title, post#Body, post#Posted}));
+        setSource(json);
     irb.execute().actionGet()
-    redirect(#viewPost(post))
+
+    return json.chop() + ", success:true}";
   }
 
   function delete(post : Question) {

@@ -12,6 +12,7 @@
     <script type="text/javascript" src="../public/editWindow.js"></script>
     <script type="text/javascript" src="../public/addAnswersToolbar.js"></script>
     <script type="text/javascript" src="../public/searchResult.js"></script>
+    <script type="text/javascript" src="../public/editQuestion.js"></script>
    <title>${title}</title>
  </head>
  <body>

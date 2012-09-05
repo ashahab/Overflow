@@ -15,6 +15,7 @@ Ext.define('gw.stackoverflow.EventWindow', {
     ],
 
     constructor:function (config) {
+
         var editor = new Ext.form.HtmlEditor({
             xtype: 'htmleditor',
             name: config.answerTextFieldName,
@@ -56,7 +57,6 @@ Ext.define('gw.stackoverflow.EventWindow', {
             modal:false,
             resizable:false,
             buttonAlign:'left',
-            savingMessage:'Saving changes...',
             layout:'fit',
             items: formPanelCfg,
             fbar:[
@@ -105,7 +105,7 @@ Ext.define('gw.stackoverflow.EventWindow', {
                 config.record.data.Text = config.editor.getValue();
                 config.store.commitChanges();
                 config.gridView.refresh();
-
+                
                 Ext.getBody().unmask();
                 fp.owner.ownerCt.hide();
             }

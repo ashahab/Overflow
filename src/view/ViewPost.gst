@@ -13,6 +13,17 @@ Ext.require([
 '*'
 ]);
 Ext.onReady(function() {
+Ext.define('Question', {
+      extend: 'Ext.data.Model',
+      fields: [
+          {name: 'Id', type: 'int'},
+          {name: 'Author', type: 'string'},
+          {name: 'Posted', type: 'date', format: 'm/d/Y'},
+          {name: 'Title', type: 'string'},
+          {name: 'Body', type: 'string'}
+
+      ]
+    });
  Ext.define('Answer', {
       extend: 'Ext.data.Model',
       fields: [
@@ -30,6 +41,7 @@ Ext.onReady(function() {
         },
         autoDestroy: true
     });
+
     <% for (answer in post.Answers) {%>
       var record = new Answer({
         Id: '${answer.Id}',
@@ -56,22 +68,37 @@ var gridPanel = Ext.create('Ext.grid.Panel', {
         xtype: 'actioncolumn'
         , width: 40
         , items: [{ // Delete button
-          icon: 'http://whatisextjs.com/BAHO/icons/cancel.png'
+          icon: '../public/resources/themes/images/cancel.png'
           , handler:deleteAnswer
         },{ // Save Button
-            icon: 'http://whatisextjs.com/BAHO/icons/note_edit.png',
-            style: 'margin-left: 5px;',
-            handler: editAnswer
-        },{ // Save Button
-            icon: 'http://whatisextjs.com/BAHO/icons/tick.png',
+            icon: '../public/resources/themes/images/note_edit.png',
             style: 'margin-left: 5px;',
             handler: editAnswer
         }]
       },
       {
+        xtype: 'actioncolumn',
+        width: 20,
+        items:[
+        { // Save Button
+            icon: '../public/resources/themes/images/tick.png',
+            style: 'margin-left: 5px;',
+            handler: markAnswered
+        }]
+      },
+      {xtype: 'actioncolumn',
+        width: 100,
+        renderer: function (value, p, record){
+             if(record.data.Answered==true){
+              return Ext.String.format('<img class="padding-img" src="{0}"/>','../public/resources/themes/images/check.png');
+              } else {
+              return Ext.String.format('<img class="padding-img" src="{0}"/>',Ext.BLANK_IMAGE_URL);;
+              }
+          }
+      },
+      {
           header: 'Answers',
           dataIndex: 'Text',
-//          width: '80%',
           forceFit:true,
           flex: 1,
           renderer: function (value, p, record){
@@ -106,9 +133,9 @@ autoload:true,
   targetUrl:'${TargetURL}?query=${post.Title}&id=${post.Id}'
   <%}%>
 });
-var postBody = Ext.htmlDecode('${h(post.Body)}')
-var BasePanel = function (config) {
+var postBody = Ext.htmlDecode('${h(post.Body)}');
 
+var BasePanel = function (config) {
  Ext.apply(config,{items: [ {
        columnWidth: .75,
        xtype: 'panel',
@@ -119,12 +146,29 @@ var BasePanel = function (config) {
 
        margins: '5 5 0 0',
        items: [{
+           id: 'outerPane',
            xtype:'panel',
            border: 'false',
            items:[{
               id: 'titlePane',
               xtype:'panel',
-              html:'<b>Title: </b>${h(post.Title)}'
+              layout: 'hbox',
+              items:[
+              {
+                xtype: 'label',
+                html: '<b>Title:</b>'
+              },
+              {
+                id: 'titleLabel',
+                xtype:'label',
+                html: '${h(post.Title)}'
+
+              },{
+                id: 'editQuestion',
+                xtype:'button',
+                text: 'Edit',
+                handler: editQuestion
+              }]
             },{
               id: 'bodyPane',
               xtype:'panel',
@@ -134,8 +178,9 @@ var BasePanel = function (config) {
               xtype:'panel',
               html:'<b>Posted: </b>${h(post.Posted as String)}'
             },gridPanel, answerBar]
-       }]
+       }],
      },searchPanel]});
+
         //call the base constructor
         BasePanel.superclass.constructor.call(this, config);
     }
@@ -146,7 +191,28 @@ var BasePanel = function (config) {
 
     });
     var win = new BasePanel({renderTo:document.body});
-      function editAnswer(grid, rowIndex, colindex) {
+    function editQuestion(question) {
+      <% using(target(Overflow #save(Question))) { %>
+      // Working with grid row data
+
+      var editQWindow = Ext.create("gw.stackoverflow.EditQuestion",{
+        question: new Question({
+        Id: '${post.Id}',
+        Author: '${h(post.Author)}',
+        Posted: '${h(post.Posted.toString())}',
+        Title: '${h(post.Title)}',
+        Body: '${h(post.Body)}',
+      }),
+        questionIdName: '${n(Question)}',
+        questionTitleName: '${n(Question#Title)}',
+        questionBodyName: '${n(Question#Body)}',
+        targetUrl:'${TargetURL}'
+      });
+      editQWindow.show();
+      Ext.getBody().mask();
+      <%}%>
+    }
+    function editAnswer(grid, rowIndex, colindex) {
       <% using(target(CommentsCx #saveComment(Question,Answer))) { %>
       // Working with grid row data
 
@@ -164,6 +230,7 @@ var BasePanel = function (config) {
       <%}%>
     } // eo handler
 
+
     function markAnswered(grid, rowIndex, colindex) {
       var record = grid.getStore().getAt(rowIndex);
 
@@ -171,10 +238,12 @@ var BasePanel = function (config) {
       Ext.Ajax.request({
           url: '${TargetURL}',
           success: function (){
+            grid.getStore().each(function(record) {
+              record.data.Answered = false;
+            });
             record.data.Answered = true;
             myStore.commitChanges();
-            grid.getView().refresh();
-            this.destroy();
+            grid.refresh();
           },
           params: { '${n(Answer)}': record.data.Id },
           failure: function (){alert('Fail...');}

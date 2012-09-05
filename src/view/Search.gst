@@ -23,7 +23,7 @@ Ext.onReady(function() {
               html:'<h2>Search posts</h2>'
             },
     {
-            text:'Add new Post',
+            text:'Ask new question',
             xtype: 'button',
             handler: function(){
                document.location.href = '${urlFor(Overflow #create())}';

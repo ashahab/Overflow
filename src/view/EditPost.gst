@@ -45,9 +45,6 @@ Ext.onReady(function() {
             labelAlign: 'top',
             msgTarget: 'side'
         },
-//        beforeAction: function(action){
-//          editor.setValue(Ext.htmlEncode(editor.getValue()));
-//        },
         items: [{
             xtype: 'container',
             anchor: '100%',
