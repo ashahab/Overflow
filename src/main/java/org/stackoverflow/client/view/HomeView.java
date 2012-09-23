@@ -1,0 +1,27 @@
+package org.stackoverflow.client.view;
+
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.IsWidget;
+
+/**
+ * Class description...
+ *
+ * @author ashahab
+ */
+public interface HomeView extends IsWidget{
+  void setPresenter(Presenter presenter);
+
+  /**
+   * Hook for activity to attach the event to fire when upload is done
+   * @param upload
+   */
+  void setOnFinishUploaderHandler(Command upload);
+
+  /**
+   * Hooks where clicking a link should take this
+   */
+  public interface Presenter {
+    void goTo(Place place);
+  }
+}

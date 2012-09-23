@@ -8,112 +8,316 @@
     <version>0.1</version>
     <packaging>jar</packaging>
     <name>stack_overflow</name>
-    <parent>
-        <groupId>org.gosu-lang</groupId>
-        <artifactId>gosu-project-parent</artifactId>
-        <version>4</version>
-    </parent>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+        <gwtVersion>2.5.0-rc1</gwtVersion>
+        <!-- GWT needs at least java 1.6 -->
+        <maven.compiler.source>1.6</maven.compiler.source>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <!-- Don't let your Mac use a crazy non-standard encoding -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <slf4j.version>1.6.6</slf4j.version>
+    </properties>
+    <build>
+        <!-- Generate compiled stuff in the folder used for development mode -->
+        <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+
+        <plugins>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <webappDirectory>webapp/</webappDirectory>
+                    <warSourceExcludes>.gwt-tmp/**</warSourceExcludes>
+                    <webXml>webapp/WEB-INF/web.xml</webXml>
+                </configuration>
+            </plugin>
+            <!-- GWT Maven Plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>gwt-maven-plugin</artifactId>
+                <version>2.3.0-1</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-user</artifactId>
+                        <version>${gwtVersion}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-dev</artifactId>
+                        <version>${gwtVersion}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>com.google.gwt</groupId>
+                        <artifactId>gwt-servlet</artifactId>
+                        <version>${gwtVersion}</version>
+                    </dependency>
+                </dependencies>
+                <!-- JS is only needed in the package phase, this speeds up testing -->
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <!-- Plugin configuration. There are many available options, see gwt-maven-plugin
+                            documentation at codehaus.org -->
+                <configuration>
+                    <!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
+                    <runTarget>Profiler.html</runTarget>
+                    <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
+                    <compileReport>true</compileReport>
+                    <runTarget>Profiler.html</runTarget>
+                    <hostedWebapp>${webappDirectory}</hostedWebapp>
+                    <i18nMessagesBundle>com.guidewire.client.Messages</i18nMessagesBundle>
+                </configuration>
+            </plugin>
+
+
+            <!-- Add source folders to test classpath in order to run gwt-tests as
+                      normal junit-tests -->
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${project.build.sourceDirectory}</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.testSourceDirectory}</additionalClasspathElement>
+                    </additionalClasspathElements>
+                    <useManifestOnlyJar>false</useManifestOnlyJar>
+                    <forkMode>always</forkMode>
+
+                    <!-- Folder for generated testing stuff -->
+                    <systemProperties>
+                        <property>
+                            <name>gwt.args</name>
+                            <value>-out ${project.build.directory}/${project.build.finalName}</value>
+                        </property>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+            <!-- Copy static web files before executing gwt:run -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.4.2</version>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/webapp</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <!-- A simple Jetty test server at http://localhost:8080/Profiler can be launched with the Maven goal jetty:run
+        and stopped with jetty:stop -->
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>maven-jetty-plugin</artifactId>
+                <version>6.1.24</version>
+                <configuration>
+                    <stopPort>9966</stopPort>
+                    <stopKey>Profiler</stopKey>
+                    <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
+                    <scanIntervalSeconds>0</scanIntervalSeconds>
+                    <!-- make sure Jetty also finds the widgetset -->
+                    <webAppConfig>
+                        <contextPath>/Profiler</contextPath>
+                        <baseResource implementation="org.mortbay.resource.ResourceCollection">
+                            <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
+                            <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
+                            <resourcesAsCSV>src/main/webapp,${project.build.directory}/${project.build.finalName}
+                            </resourcesAsCSV>
+                        </baseResource>
+                    </webAppConfig>
+                </configuration>
+            </plugin>
+        </plugins>
+
+
+    </build>
+
     <repositories>
         <repository>
             <id>gosu-lang.org-releases</id>
             <name>Official Gosu website (releases)</name>
             <url>http://gosu-lang.org/nexus/content/groups/releases</url>
         </repository>
+        <!-- Central proxy -->
+        <repository>
+            <id>central</id>
+            <name>Guidewire Nexus proxy for Maven Central</name>
+            <url>http://nexus/content/repositories/central</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+        <!-- Guidewire Nexus with extra 3rd-party dependencies -->
+        <repository>
+            <id>gw.thirdparty</id>
+            <name>Guidewire Nexus repository for third party libs not in Central</name>
+            <url>http://nexus/content/repositories/thirdparty</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+
         <repository>
             <id>sonatype</id>
             <name>Sourceforge Release Repository</name>
             <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository><repository>
-        <id>central</id>
-        <name>Guidewire Nexus proxy for Maven Central</name>
-        <url>http://nexus/content/repositories/central</url>
-        <snapshots>
-            <enabled>false</enabled>
-        </snapshots>
-        <releases>
-            <enabled>true</enabled>
-        </releases>
-    </repository>
+        </repository>
+
+
+
     </repositories>
+
     <dependencies>
         <dependency>
-            <groupId>org.gosu-lang.ronin</groupId>
-            <artifactId>ronin-log</artifactId>
-            <version>0.9.4</version>
-            <scope>runtime</scope>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.6</version>
         </dependency>
         <dependency>
-            <artifactId>gosu-proj</artifactId>
-            <groupId>org.gosu-lang.gosu</groupId>
-            <type>pom</type>
-            <version>0.9-14</version>
-        </dependency>
-        <dependency>
-            <groupId>org.gosu-lang.ronin</groupId>
-            <artifactId>ronin</artifactId>
-            <version>0.9.6-1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.gosu-lang.tosa</groupId>
-            <artifactId>tosa-loader</artifactId>
-            <version>0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.gosu-lang.tosa</groupId>
-            <artifactId>tosa-runtime</artifactId>
-            <version>0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.3.148</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-            <version>8.0.0.M2</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-webapp</artifactId>
-            <version>8.0.0.M2</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.gosu-lang.ronin</groupId>
-            <artifactId>ronin-init</artifactId>
-            <version>0.9.6-1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.gosu-lang.ronin</groupId>
-            <artifactId>ronin-test</artifactId>
-            <version>0.9.6-1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>2.16.1</version>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>13.0</version>
             <exclusions>
                 <exclusion>
-                    <groupId>org.seleniumhq.selenium</groupId>
-                    <artifactId>servlet-api-2.5</artifactId>
+                    <groupId>com.google.code.findbugs</groupId>
+                    <artifactId>jsr305</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.gosu-lang.gosu</groupId>
+            <artifactId>gosu</artifactId>
+            <version>0.9-14</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.16</version>
+        </dependency>
+        <dependency>
+            <groupId>gw.managed.osgi</groupId>
+            <artifactId>sqlinform-pro</artifactId>
+            <version>4.8.49</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>gw.managed.osgi</groupId>
+            <artifactId>sqlinform-pro</artifactId>
+            <version>4.8.49</version>
+        </dependency>
+        <dependency>
+            <groupId>com.orientechnologies</groupId>
+            <artifactId>orientdb-server</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.orientechnologies</groupId>
+            <artifactId>orientdb-core</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.gwt</groupId>
+            <artifactId>gwt-user</artifactId>
+            <version>${gwtVersion}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.0.0.GA</version>
+            <classifier>sources</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+        </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert-core</artifactId>
+            <version>2.0M2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sencha.gxt</groupId>
+            <artifactId>gxt</artifactId>
+            <version>3.0.0b</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sencha.gxt</groupId>
+            <artifactId>gxt-chart</artifactId>
+            <version>3.0.0b</version>
+        </dependency>
+        <dependency>
+            <groupId>com.googlecode.gwtupload</groupId>
+            <artifactId>gwtupload</artifactId>
+            <version>0.6.4</version>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
             <version>0.19.8</version>
-        </dependency>
-        <dependency>
-            <groupId>org.gosu-lang.ronin</groupId>
-            <artifactId>ronin-coffee</artifactId>
-            <version>0.2</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
@@ -125,47 +329,5 @@
             <version>3.1</version>
         </dependency>
     </dependencies>
-    <build>
-        <sourceDirectory>src</sourceDirectory>
-        <testSourceDirectory>test</testSourceDirectory>
-        <resources>
-            <resource>
-                <directory>src</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>test</directory>
-                <excludes>
-                    <exclude>**/*.java</exclude>
-                </excludes>
-            </testResource>
-        </testResources>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Contains-Sources>gs, gsx, gst</Contains-Sources>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.gosu-lang</groupId>
-                <artifactId>maven-gosu-plugin</artifactId>
-                <configuration>
-                    <gosuVersion>0.9-11</gosuVersion>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
 </project>
