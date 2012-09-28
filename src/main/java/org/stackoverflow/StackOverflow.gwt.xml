@@ -1,6 +1,6 @@
 <!DOCTYPE module PUBLIC "-//Google Inc.//DTD Google Web Toolkit 2.0//EN"
         "http://google-web-toolkit.googlecode.com/svn/releases/2.0/distro-source/core/src/gwt-module.dtd">
-<module>
+<module rename-to="StackOverflow">
 
     <inherits name='com.google.gwt.user.User'/>
     <inherits name='com.google.gwt.user.theme.clean.Clean' />
@@ -21,5 +21,8 @@
             <when-property-is name='user.agent' value='ie6' />
             <when-property-is name='user.agent' value='ie8' />
         </any>
+    </replace-with>
+    <replace-with class="org.stackoverflow.client.ClientFactoryImpl">
+        <when-type-is class="org.stackoverflow.client.ClientFactory"/>
     </replace-with>
 </module>

@@ -13,12 +13,6 @@ public interface HomeView extends IsWidget{
   void setPresenter(Presenter presenter);
 
   /**
-   * Hook for activity to attach the event to fire when upload is done
-   * @param upload
-   */
-  void setOnFinishUploaderHandler(Command upload);
-
-  /**
    * Hooks where clicking a link should take this
    */
   public interface Presenter {

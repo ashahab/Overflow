@@ -1,8 +1,8 @@
 package org.stackoverflow.client.mvp;
 
-import com.guidewire.tools.profiler.client.places.HomePlace;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
+import org.stackoverflow.client.places.HomePlace;
 
 
 /**

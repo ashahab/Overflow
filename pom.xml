@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.guidewire</groupId>
-    <artifactId>stack_overflow</artifactId>
+    <groupId>org</groupId>
+    <artifactId>stackoverflow</artifactId>
     <version>0.1</version>
     <packaging>jar</packaging>
-    <name>stack_overflow</name>
+    <name>stackoverflow</name>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
@@ -31,9 +31,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <webappDirectory>webapp/</webappDirectory>
+                    <webappDirectory>src/main/webapp/</webappDirectory>
                     <warSourceExcludes>.gwt-tmp/**</warSourceExcludes>
-                    <webXml>webapp/WEB-INF/web.xml</webXml>
+                    <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
                 </configuration>
             </plugin>
             <!-- GWT Maven Plugin -->
@@ -72,10 +72,10 @@
                             documentation at codehaus.org -->
                 <configuration>
                     <!-- URL that should be automatically opened in the GWT shell (gwt:run). -->
-                    <runTarget>Profiler.html</runTarget>
+                    <runTarget>StackOverflow.html</runTarget>
                     <!-- Ask GWT to create the Story of Your Compile (SOYC) (gwt:compile) -->
                     <compileReport>true</compileReport>
-                    <runTarget>Profiler.html</runTarget>
+                    <runTarget>StackOverflow.html</runTarget>
                     <hostedWebapp>${webappDirectory}</hostedWebapp>
                     <i18nMessagesBundle>com.guidewire.client.Messages</i18nMessagesBundle>
                 </configuration>
@@ -136,12 +136,12 @@
                 <version>6.1.24</version>
                 <configuration>
                     <stopPort>9966</stopPort>
-                    <stopKey>Profiler</stopKey>
+                    <stopKey>StackOverflow</stopKey>
                     <!-- Redeploy every x seconds if changes are detected, 0 for no automatic redeployment -->
                     <scanIntervalSeconds>0</scanIntervalSeconds>
                     <!-- make sure Jetty also finds the widgetset -->
                     <webAppConfig>
-                        <contextPath>/Profiler</contextPath>
+                        <contextPath>/StackOverflow</contextPath>
                         <baseResource implementation="org.mortbay.resource.ResourceCollection">
                             <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
                             <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->

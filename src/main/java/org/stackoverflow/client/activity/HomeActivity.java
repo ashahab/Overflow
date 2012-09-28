@@ -24,7 +24,10 @@ public class HomeActivity extends AbstractActivity implements
 	 */
 	@Override
 	public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-		
+    final HomeView homeView = _clientFactory.getHomeView();
+    //set the
+    homeView.setPresenter(this);
+    containerWidget.setWidget(homeView.asWidget());
 	}
 
 
