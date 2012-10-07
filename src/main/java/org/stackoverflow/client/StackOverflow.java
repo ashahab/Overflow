@@ -21,7 +21,7 @@ import org.stackoverflow.client.places.HomePlace;
  * To change this template use File | Settings | File Templates.
  */
 public class StackOverflow implements EntryPoint {
-  private Place _defaultPlace = new HomePlace();
+  private Place _defaultPlace = new HomePlace("home");
   private SimplePanel _appWidget = new SimplePanel();
   public void onModuleLoad() {
     ClientFactory clientFactory = GWT.create(ClientFactory.class);

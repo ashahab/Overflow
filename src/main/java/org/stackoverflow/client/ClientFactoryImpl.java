@@ -3,6 +3,8 @@ package org.stackoverflow.client;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
+import org.stackoverflow.client.view.AskQuestionView;
+import org.stackoverflow.client.view.AskQuestionViewImpl;
 import org.stackoverflow.client.view.HomeView;
 import org.stackoverflow.client.view.HomeViewImpl;
 
@@ -28,5 +30,10 @@ public class ClientFactoryImpl implements ClientFactory
   @Override
   public HomeView getHomeView() {
     return new HomeViewImpl();
+  }
+
+  @Override
+  public AskQuestionView getAskQuestionView() {
+    return new AskQuestionViewImpl();
   }
 }

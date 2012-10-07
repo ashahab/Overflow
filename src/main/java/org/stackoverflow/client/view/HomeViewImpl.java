@@ -1,14 +1,14 @@
 package org.stackoverflow.client.view;
 
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.widget.client.TextButton;
 import com.sencha.gxt.widget.core.client.Composite;
-import com.sencha.gxt.widget.core.client.button.TextButton;
 import com.sencha.gxt.widget.core.client.container.HorizontalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.VerticalLayoutContainer;
 import com.sencha.gxt.widget.core.client.container.Viewport;
 import com.sencha.gxt.widget.core.client.form.TextField;
+import org.stackoverflow.client.places.AskQuestionPlace;
 
 /**
  * Class description...
@@ -17,7 +17,6 @@ import com.sencha.gxt.widget.core.client.form.TextField;
  */
 public class HomeViewImpl extends Composite implements HomeView {
   private Presenter _presenter;
-  private String _fileName;
 
   private VerticalLayoutContainer _panel;
 
@@ -30,6 +29,12 @@ public class HomeViewImpl extends Composite implements HomeView {
     searchField.setEmptyText("Ask!");
     TextButton newQ = new TextButton();
     newQ.setText("Add new question!");
+    newQ.addClickHandler(new ClickHandler() {
+      @Override
+      public void onClick(ClickEvent event) {
+        _presenter.goTo(new AskQuestionPlace("question"));
+      }
+    });
     horiz.add(searchField);
     horiz.add(newQ);
 

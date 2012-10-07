@@ -11,6 +11,10 @@ import org.stackoverflow.client.activity.HomeActivity;
  * @author ashahab
  */
 public class HomePlace extends BaseProfilerPlace {
+  private String _token;
+  public HomePlace(String token){
+    _token = token;
+  }
   @Override
   public Activity createActivity(ClientFactory clientFactory) {
     return new HomeActivity(this, clientFactory);
@@ -19,12 +23,12 @@ public class HomePlace extends BaseProfilerPlace {
   public static class Tokenizer implements PlaceTokenizer<HomePlace> {
     @Override
     public HomePlace getPlace(String token) {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
+      return new HomePlace(token);
     }
 
     @Override
     public String getToken(HomePlace place) {
-      return null;
+      return place._token;
     }
   }
 }
