@@ -17,11 +17,11 @@ import com.sencha.gxt.widget.core.client.form.HtmlEditor;
 public interface AskQuestionView extends IsWidget {
   public void setPresenter(Presenter presenter);
 
-  HasValue<String> getNameField();
+  public HasValue<String> getNameField();
 
-  TakesValue<String> getEditor();
+  public TakesValue<String> getEditor();
 
-  HasClickHandlers getButton();
+  public HasClickHandlers getButton();
 
   public interface Presenter {
     void goTo(Place place);

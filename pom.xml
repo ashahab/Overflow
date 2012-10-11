@@ -12,6 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
         <gwtVersion>2.5.0-rc1</gwtVersion>
+        <neo4jVersion>1.8</neo4jVersion>
         <!-- GWT needs at least java 1.6 -->
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
@@ -40,7 +41,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>gwt-maven-plugin</artifactId>
-                <version>2.3.0-1</version>
+                <version>${gwtVersion}</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.google.gwt</groupId>
@@ -52,11 +53,11 @@
                         <artifactId>gwt-dev</artifactId>
                         <version>${gwtVersion}</version>
                     </dependency>
-                    <dependency>
-                        <groupId>com.google.gwt</groupId>
-                        <artifactId>gwt-servlet</artifactId>
-                        <version>${gwtVersion}</version>
-                    </dependency>
+                    <!--<dependency>-->
+                        <!--<groupId>com.google.gwt</groupId>-->
+                        <!--<artifactId>gwt-servlet</artifactId>-->
+                        <!--<version>${gwtVersion}</version>-->
+                    <!--</dependency>-->
                 </dependencies>
                 <!-- JS is only needed in the package phase, this speeds up testing -->
                 <executions>
@@ -157,11 +158,7 @@
     </build>
 
     <repositories>
-        <repository>
-            <id>gosu-lang.org-releases</id>
-            <name>Official Gosu website (releases)</name>
-            <url>http://gosu-lang.org/nexus/content/groups/releases</url>
-        </repository>
+
         <!-- Central proxy -->
         <repository>
             <id>central</id>
@@ -205,8 +202,8 @@
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>13.0</version>
+            <artifactId>guava-gwt</artifactId>
+            <version>13.0.1</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.google.code.findbugs</groupId>
@@ -219,13 +216,6 @@
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.gosu-lang.gosu</groupId>
-            <artifactId>gosu</artifactId>
-            <version>0.9-14</version>
-            <type>pom</type>
-        </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
@@ -236,46 +226,13 @@
             <artifactId>log4j</artifactId>
             <version>1.2.16</version>
         </dependency>
-        <dependency>
-            <groupId>gw.managed.osgi</groupId>
-            <artifactId>sqlinform-pro</artifactId>
-            <version>4.8.49</version>
-            <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>gw.managed.osgi</groupId>
-            <artifactId>sqlinform-pro</artifactId>
-            <version>4.8.49</version>
-        </dependency>
-        <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-server</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.orientechnologies</groupId>
-            <artifactId>orientdb-core</artifactId>
-            <version>1.1.0</version>
-        </dependency>
-        <dependency>
+         <dependency>
             <groupId>com.google.gwt</groupId>
             <artifactId>gwt-user</artifactId>
             <version>${gwtVersion}</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>1.0.0.GA</version>
-            <classifier>sources</classifier>
-            <scope>provided</scope>
-        </dependency>
+
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -315,18 +272,16 @@
             <version>0.6.4</version>
         </dependency>
         <dependency>
-            <groupId>org.elasticsearch</groupId>
-            <artifactId>elasticsearch</artifactId>
-            <version>0.19.8</version>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-community</artifactId>
+            <version>${neo4jVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.neo4j</groupId>
-            <artifactId>neo4j-community</artifactId>
-            <version>1.6.1</version>
-        </dependency>
-        <dependency><groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.1</version>
+            <artifactId>neo4j-kernel</artifactId>
+            <version>${neo4jVersion}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
