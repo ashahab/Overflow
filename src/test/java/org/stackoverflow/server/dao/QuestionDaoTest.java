@@ -54,4 +54,8 @@ public class QuestionDaoTest {
         assertThat( foundNode.getId()).isEqualTo( n.getId() );
         assertThat(foundNode.getProperty( "name" )).isEqualTo( "Nancy" );
     }
+
+    public void should_query_index() {
+
+    }
 }

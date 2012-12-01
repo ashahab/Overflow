@@ -24,14 +24,14 @@ public class QuestionDao {
         USERS_REFERENCE,
         USER
     }
-    private static final String DB_PATH = "neo4j-store";
-    private static final String USERNAME_KEY = "username";
+    public static final String DB_PATH = "neo4j-store";
+    public static final String USERNAME_KEY = "username";
     private GraphDatabaseService _graphDb;
-    private Index<Node> _nodeIndex;
+//    private Index<Node> _nodeIndex;
 
     public QuestionDao(GraphDatabaseService graphDb) {
         _graphDb = graphDb;
-        _nodeIndex = _graphDb.index().forNodes(INDEX_NAME);
+//        _nodeIndex = _graphDb.index().forNodes(INDEX_NAME);
     }
     public Question save (Question question){
         //create a question node, and link it to a corresponding user node
@@ -42,7 +42,7 @@ public class QuestionDao {
         String username = user.getName();
         Node node = _graphDb.createNode();
         node.setProperty( USERNAME_KEY, username );
-        _nodeIndex.add( node, USERNAME_KEY, username );
+//        _nodeIndex.add( node, USERNAME_KEY, username );
         Transaction tx = _graphDb.beginTx();
         return user;
     }
@@ -56,7 +56,9 @@ public class QuestionDao {
     {
         Node node = _graphDb.createNode();
         node.setProperty( USERNAME_KEY, username );
-        _nodeIndex.add( node, USERNAME_KEY, username );
+//        _nodeIndex.add( node, USERNAME_KEY, username );
         return node;
     }
+
+
 }
