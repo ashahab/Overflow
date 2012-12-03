@@ -9,7 +9,7 @@ import com.google.gwt.user.client.ui.IsWidget;
  *
  * @author ashahab
  */
-public interface HomeView extends IsWidget{
+public interface SearchView extends IsWidget{
   void setPresenter(Presenter presenter);
 
   /**

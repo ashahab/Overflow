@@ -9,7 +9,6 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import org.stackoverflow.client.ClientFactory;
 import org.stackoverflow.client.places.AskQuestionPlace;
 import org.stackoverflow.client.view.AskQuestionView;
-import org.stackoverflow.client.view.HomeView;
 
 /**
  * Class description...

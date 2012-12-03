@@ -5,6 +5,9 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.Index;
+import org.neo4j.graphdb.index.ReadableIndex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.stackoverflow.shared.model.Question;
 import org.stackoverflow.shared.model.User;
 
@@ -18,8 +21,10 @@ import org.stackoverflow.shared.model.User;
 public class QuestionDao {
 
     public static final String INDEX_NAME = "nodes";
+    public static Logger _logger = LoggerFactory.getLogger(QuestionDao.class);
+    private ReadableIndex<Node> _index;
 
-    private static enum RelTypes implements RelationshipType
+    public static enum RelTypes implements RelationshipType
     {
         USERS_REFERENCE,
         USER
@@ -31,7 +36,9 @@ public class QuestionDao {
 
     public QuestionDao(GraphDatabaseService graphDb) {
         _graphDb = graphDb;
-//        _nodeIndex = _graphDb.index().forNodes(INDEX_NAME);
+        _index = _graphDb.index()
+                .getNodeAutoIndexer()
+                .getAutoIndex();
     }
     public Question save (Question question){
         //create a question node, and link it to a corresponding user node
@@ -42,22 +49,26 @@ public class QuestionDao {
         String username = user.getName();
         Node node = _graphDb.createNode();
         node.setProperty( USERNAME_KEY, username );
-//        _nodeIndex.add( node, USERNAME_KEY, username );
-        Transaction tx = _graphDb.beginTx();
         return user;
     }
 
-    private static String idToUserName( final int id )
+    static String idToUserName( final int id )
     {
         return "user" + id;
     }
 
-    private Node createAndIndexUser( final String username )
+    public Node createAndIndexUser(final String username)
     {
         Node node = _graphDb.createNode();
         node.setProperty( USERNAME_KEY, username );
-//        _nodeIndex.add( node, USERNAME_KEY, username );
+        node.setProperty("name", "Name of " +username);
         return node;
+    }
+
+    public Node findUser(String userName){
+        _logger.debug("userName: " + userName);
+
+        return _index.get(USERNAME_KEY, userName.trim()).getSingle();
     }
 
 

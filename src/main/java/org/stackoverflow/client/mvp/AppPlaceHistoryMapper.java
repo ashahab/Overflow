@@ -3,7 +3,8 @@ package org.stackoverflow.client.mvp;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
 import com.google.gwt.place.shared.WithTokenizers;
 import org.stackoverflow.client.places.AskQuestionPlace;
-import org.stackoverflow.client.places.HomePlace;
+import org.stackoverflow.client.places.LoginPlace;
+import org.stackoverflow.client.places.SearchPlace;
 
 
 /**
@@ -12,6 +13,6 @@ import org.stackoverflow.client.places.HomePlace;
  * annotation or by extending PlaceHistoryMapperWithFactory and creating a
  * separate TokenizerFactory.
  */
-@WithTokenizers( { HomePlace.Tokenizer.class, AskQuestionPlace.Tokenizer.class})
+@WithTokenizers( {LoginPlace.Tokenizer.class, SearchPlace.Tokenizer.class, AskQuestionPlace.Tokenizer.class})
 public interface AppPlaceHistoryMapper extends PlaceHistoryMapper {
 }

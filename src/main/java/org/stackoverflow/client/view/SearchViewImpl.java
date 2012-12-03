@@ -15,13 +15,13 @@ import org.stackoverflow.client.places.AskQuestionPlace;
  *
  * @author ashahab
  */
-public class HomeViewImpl extends Composite implements HomeView {
+public class SearchViewImpl extends Composite implements SearchView {
   private Presenter _presenter;
 
   private VerticalLayoutContainer _panel;
 
 
-  public HomeViewImpl() {
+  public SearchViewImpl() {
     Viewport viewport = new Viewport();
     _panel = new VerticalLayoutContainer();
     HorizontalLayoutContainer horiz = new HorizontalLayoutContainer();

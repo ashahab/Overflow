@@ -11,7 +11,8 @@ import com.google.gwt.user.client.ui.*;
 import com.google.web.bindery.event.shared.EventBus;
 import org.stackoverflow.client.mvp.AppActivityMapper;
 import org.stackoverflow.client.mvp.AppPlaceHistoryMapper;
-import org.stackoverflow.client.places.HomePlace;
+import org.stackoverflow.client.places.LoginPlace;
+import org.stackoverflow.client.places.SearchPlace;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,7 +22,7 @@ import org.stackoverflow.client.places.HomePlace;
  * To change this template use File | Settings | File Templates.
  */
 public class StackOverflow implements EntryPoint {
-  private Place _defaultPlace = new HomePlace("home");
+  private Place _defaultPlace = new LoginPlace("home");
   private SimplePanel _appWidget = new SimplePanel();
   public void onModuleLoad() {
     ClientFactory clientFactory = GWT.create(ClientFactory.class);

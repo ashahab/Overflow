@@ -7,4 +7,18 @@
     <welcome-file-list>
         <welcome-file>StackOverflow.html</welcome-file>
     </welcome-file-list>
+
+    <listener>
+        <listener-class>org.stackoverflow.server.service.GraphDbService</listener-class>
+    </listener>
+    <!-- Servlets -->
+    <servlet>
+        <servlet-name>overflowService</servlet-name>
+        <servlet-class>org.stackoverflow.server.service.OverflowServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>overflowService</servlet-name>
+        <url-pattern>/StackOverflow/overflowService</url-pattern>
+    </servlet-mapping>
 </web-app>
