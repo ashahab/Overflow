@@ -12,13 +12,14 @@ import org.stackoverflow.client.view.SearchView;
  *
  * @author ashahab
  */
-public interface ClientFactory
-{
-  EventBus getEventBus();
-  PlaceController getPlaceController();
-  SearchView getHomeView();
+public interface ClientFactory {
+    EventBus getEventBus();
 
-  AskQuestionView getAskQuestionView();
+    PlaceController getPlaceController();
+
+    SearchView getHomeView(String token);
+
+    AskQuestionView getAskQuestionView();
 
     LoginView getLoginView();
 

@@ -22,8 +22,8 @@ public class ClientFactoryImpl implements ClientFactory {
     }
 
     @Override
-    public SearchView getHomeView() {
-        return new SearchViewImpl();
+    public SearchView getHomeView(String token) {
+        return new SearchViewImpl(token);
     }
 
     @Override

@@ -13,10 +13,11 @@ public class SearchActivity extends AbstractActivity implements
     // Used to obtain views, eventBus, placeController
     // Alternatively, could be injected via GIN
     private ClientFactory _clientFactory;
+    private SearchPlace _place;
 
     public SearchActivity(SearchPlace place, ClientFactory clientFactory) {
         this._clientFactory = clientFactory;
-        //
+        _place = place;
     }
 
     /**
@@ -24,7 +25,7 @@ public class SearchActivity extends AbstractActivity implements
      */
     @Override
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
-        final SearchView searchView = _clientFactory.getHomeView();
+        final SearchView searchView = _clientFactory.getHomeView(_place.getToken());
         //set the
         searchView.setPresenter(this);
         containerWidget.setWidget(searchView.asWidget());

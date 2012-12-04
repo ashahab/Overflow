@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.index.ReadableIndex;
 import org.slf4j.Logger;
@@ -35,14 +36,19 @@ public class OverflowServiceImpl extends RemoteServiceServlet implements Overflo
         GraphDatabaseService graphDb
                 = GraphDbService.getGraphDb();
         Transaction tx = graphDb.beginTx();
-        ReadableIndex<Node> autoNodeIndex = graphDb.index()
-                .getNodeAutoIndexer()
-                .getAutoIndex();
+
 
         try
         {
             QuestionDao dao = new QuestionDao(graphDb);
-
+//            for (int i = 0; i < 100; i++){
+//                Node user = dao.findUser(dao.idToUserName(i));
+//                _logger.debug("User: " + user.getProperty(QuestionDao.USERNAME_KEY));
+//                for(Relationship r: user.getRelationships()){
+//                    r.delete();
+//                }
+//                user.delete();
+//            }
 
             // Create users sub reference node
             Node usersReferenceNode = graphDb.createNode();

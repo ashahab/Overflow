@@ -46,30 +46,30 @@ public class LoginActivity extends AbstractActivity implements
 
     @Override
     public String login(final String userName) {
-        service.createUsers(new AsyncCallback<Void>() {
+//        service.createUsers(new AsyncCallback<Void>() {
+//            @Override
+//            public void onFailure(Throwable throwable) {
+//                Window.alert(throwable.toString());
+//            }
+//
+//            @Override
+//            public void onSuccess(Void aVoid) {
+//
+//            }
+//        });
+        service.login(userName, new AsyncCallback<String>() {
             @Override
             public void onFailure(Throwable throwable) {
                 Window.alert(throwable.toString());
             }
 
             @Override
-            public void onSuccess(Void aVoid) {
-                service.login(userName, new AsyncCallback<String>() {
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        Window.alert(throwable.toString());
-                    }
-
-                    @Override
-                    public void onSuccess(String name) {
-                        goTo(new SearchPlace(name));
-                    }
-                }
-
-                );
+            public void onSuccess(String name) {
+                goTo(new SearchPlace(name));
             }
-        });
+        }
 
+        );
         return null;
     }
 }
