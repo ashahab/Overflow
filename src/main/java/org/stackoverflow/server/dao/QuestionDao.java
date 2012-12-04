@@ -52,7 +52,7 @@ public class QuestionDao {
         return user;
     }
 
-    static String idToUserName( final int id )
+    public static String idToUserName( final int id )
     {
         return "user" + id;
     }

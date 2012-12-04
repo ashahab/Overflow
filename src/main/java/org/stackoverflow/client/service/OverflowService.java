@@ -13,4 +13,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("overflowService")
 public interface OverflowService extends RemoteService {
     String login(String userName);
+
+    void createUsers();
 }

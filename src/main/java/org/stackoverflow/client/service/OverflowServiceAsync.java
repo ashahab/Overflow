@@ -12,4 +12,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 public interface OverflowServiceAsync {
     void login(String userName, AsyncCallback<String> async);
+
+    void createUsers(AsyncCallback<Void> async);
 }

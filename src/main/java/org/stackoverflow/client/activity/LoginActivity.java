@@ -23,9 +23,10 @@ import org.stackoverflow.client.view.SearchView;
  * To change this template use File | Settings | File Templates.
  */
 public class LoginActivity extends AbstractActivity implements
-        LoginView.Presenter{
+        LoginView.Presenter {
     private ClientFactory _clientFactory;
     private OverflowServiceAsync service = GWT.create(OverflowService.class);
+
     public LoginActivity(LoginPlace loginPlace, ClientFactory clientFactory) {
         _clientFactory = clientFactory;
     }
@@ -44,20 +45,31 @@ public class LoginActivity extends AbstractActivity implements
     }
 
     @Override
-    public String login(String userName) {
-       service.login(userName, new AsyncCallback<String>() {
-           @Override
-           public void onFailure(Throwable throwable) {
-               Window.alert(throwable.toString());
-           }
+    public String login(final String userName) {
+        service.createUsers(new AsyncCallback<Void>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                Window.alert(throwable.toString());
+            }
 
-           @Override
-           public void onSuccess(String name) {
-               goTo(new SearchPlace(name));
-           }
-       }
+            @Override
+            public void onSuccess(Void aVoid) {
+                service.login(userName, new AsyncCallback<String>() {
+                    @Override
+                    public void onFailure(Throwable throwable) {
+                        Window.alert(throwable.toString());
+                    }
 
-       );
-       return null;
+                    @Override
+                    public void onSuccess(String name) {
+                        goTo(new SearchPlace(name));
+                    }
+                }
+
+                );
+            }
+        });
+
+        return null;
     }
 }
