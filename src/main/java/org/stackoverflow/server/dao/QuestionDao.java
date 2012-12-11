@@ -65,10 +65,17 @@ public class QuestionDao {
         return node;
     }
 
-    public Node findUser(String userName){
+    public User findUser(String userName){
         _logger.debug("userName: " + userName);
 
-        return _index.get(USERNAME_KEY, userName.trim()).getSingle();
+        return nodeToUser(_index.get(USERNAME_KEY, userName.trim()).getSingle());
+    }
+
+    private User nodeToUser(Node userNode) {
+        User user = new User((String)userNode.getProperty(USERNAME_KEY));
+        user.setName((String)userNode.getProperty("name"));
+        user.setId(userNode.getId() + "");
+        return user;
     }
 
 

@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stackoverflow.client.service.OverflowService;
 import org.stackoverflow.server.dao.QuestionDao;
+import org.stackoverflow.shared.model.User;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,15 +21,17 @@ import org.stackoverflow.server.dao.QuestionDao;
  * To change this template use File | Settings | File Templates.
  */
 public class OverflowServiceImpl extends RemoteServiceServlet implements OverflowService {
+    public static final String LOGGED_IN_USER = "logged_in_user";
     private Logger _logger = LoggerFactory.getLogger(OverflowServiceImpl.class);
     @Override
-    public String login(String userName) {
+    public User login(String userName) {
         GraphDatabaseService graphDatabaseService
                 = GraphDbService.getGraphDb();
         QuestionDao dao = new QuestionDao(graphDatabaseService);
-        Node user = Preconditions.checkNotNull(dao.findUser(userName));
-        String name = Preconditions.checkNotNull((String)user.getProperty("name"));
-        return name;
+        User user = Preconditions.checkNotNull(dao.findUser(userName));
+        getThreadLocalRequest().getSession().setAttribute(LOGGED_IN_USER, user);
+        _logger.debug("Logged in: " + user);
+        return user;
     }
 
     @Override
@@ -41,14 +44,6 @@ public class OverflowServiceImpl extends RemoteServiceServlet implements Overflo
         try
         {
             QuestionDao dao = new QuestionDao(graphDb);
-//            for (int i = 0; i < 100; i++){
-//                Node user = dao.findUser(dao.idToUserName(i));
-//                _logger.debug("User: " + user.getProperty(QuestionDao.USERNAME_KEY));
-//                for(Relationship r: user.getRelationships()){
-//                    r.delete();
-//                }
-//                user.delete();
-//            }
 
             // Create users sub reference node
             Node usersReferenceNode = graphDb.createNode();
@@ -68,7 +63,7 @@ public class OverflowServiceImpl extends RemoteServiceServlet implements Overflo
 
             // Delete the persons and remove them from the index
             for (int i = 0; i < 100; i++){
-                _logger.debug("User: " + dao.findUser(dao.idToUserName(i)).getProperty(QuestionDao.USERNAME_KEY));
+                _logger.debug("User: " + dao.findUser(dao.idToUserName(i)).getUserName());
             }
             tx.success();
         }

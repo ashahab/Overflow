@@ -2,6 +2,7 @@ package org.stackoverflow.client.service;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.stackoverflow.shared.model.User;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  * To change this template use File | Settings | File Templates.
  */
 public interface OverflowServiceAsync {
-    void login(String userName, AsyncCallback<String> async);
+    void login(String userName, AsyncCallback<User> async);
 
     void createUsers(AsyncCallback<Void> async);
 }

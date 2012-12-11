@@ -7,6 +7,8 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 import org.stackoverflow.client.ClientFactory;
+import org.stackoverflow.client.events.LoggedInEvent;
+import org.stackoverflow.client.events.LoggedInEventHandler;
 import org.stackoverflow.client.places.AskQuestionPlace;
 import org.stackoverflow.client.view.AskQuestionView;
 
@@ -34,6 +36,7 @@ public class AskQuestionActivity extends AbstractActivity implements AskQuestion
         String question = view.getNameField().getValue();
         String description = view.getEditor().getValue();
         //make async call to save to the db
+
       }
     });
   }

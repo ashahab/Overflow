@@ -12,7 +12,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseSettings;
  * Time: 11:07 PM
  * To change this template use File | Settings | File Templates.
  */
-public class TestMain {
+public class FindAll {
     public static void main (String... args){
         GraphDatabaseService graphDb = new GraphDatabaseFactory().
                 newEmbeddedDatabaseBuilder(QuestionDao.DB_PATH).

@@ -57,7 +57,7 @@ public class CreateUsers {
 
             // Delete the persons and remove them from the index
             for (int i = 0; i < 100; i++){
-                System.out.println("User: " + dao.findUser(dao.idToUserName(i)).getProperty(QuestionDao.USERNAME_KEY));
+                System.out.println("User: " + dao.findUser(dao.idToUserName(i)).getUserName());
             }
             tx.success();
         }
