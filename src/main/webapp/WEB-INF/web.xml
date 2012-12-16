@@ -13,6 +13,16 @@
     </listener>
     <!-- Servlets -->
     <servlet>
+        <servlet-name>loginService</servlet-name>
+        <servlet-class>org.stackoverflow.server.service.LoginServiceImpl</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>loginService</servlet-name>
+        <url-pattern>/StackOverflow/loginService</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>overflowService</servlet-name>
         <servlet-class>org.stackoverflow.server.service.OverflowServiceImpl</servlet-class>
     </servlet>

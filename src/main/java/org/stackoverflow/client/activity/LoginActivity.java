@@ -12,6 +12,8 @@ import org.stackoverflow.client.ClientFactory;
 import org.stackoverflow.client.events.LoggedInEvent;
 import org.stackoverflow.client.places.LoginPlace;
 import org.stackoverflow.client.places.SearchPlace;
+import org.stackoverflow.client.service.LoginService;
+import org.stackoverflow.client.service.LoginServiceAsync;
 import org.stackoverflow.client.service.OverflowService;
 import org.stackoverflow.client.service.OverflowServiceAsync;
 import org.stackoverflow.client.view.LoginView;
@@ -30,7 +32,7 @@ import java.util.Date;
 public class LoginActivity extends AbstractActivity implements
         LoginView.Presenter {
     private ClientFactory _clientFactory;
-    private OverflowServiceAsync service = GWT.create(OverflowService.class);
+    private LoginServiceAsync service = GWT.create(LoginService.class);
 
     public LoginActivity(LoginPlace loginPlace, ClientFactory clientFactory) {
         _clientFactory = clientFactory;
@@ -52,7 +54,7 @@ public class LoginActivity extends AbstractActivity implements
     @Override
     public String login(final String userName) {
 
-        service.login(userName, new AsyncCallback<User>() {
+        service.loginServer(userName, null, new AsyncCallback<User>() {
             @Override
             public void onFailure(Throwable throwable) {
                 Window.alert(throwable.toString());
@@ -60,12 +62,16 @@ public class LoginActivity extends AbstractActivity implements
 
             @Override
             public void onSuccess(User user) {
-                _clientFactory.getEventBus().fireEvent(new LoggedInEvent(user));
-                String sessionID = user.getId();
-                final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
-                Date expires = new Date(System.currentTimeMillis() + DURATION);
-                Cookies.setCookie("sid", sessionID, expires, null, "/", false);
-                goTo(new SearchPlace(user.getName()));
+                if (user != null) {
+//                    _clientFactory.getEventBus().fireEvent(new LoggedInEvent(user));
+                    String sessionID = user.getId();
+                    final long DURATION = 1000 * 60 * 60 * 24 * 14; //duration remembering login. 2 weeks in this example.
+                    Date expires = new Date(System.currentTimeMillis() + DURATION);
+                    Cookies.setCookie("sid", sessionID, expires, null, "/", false);
+                    goTo(new SearchPlace(user.getName()));
+                } else {
+                    Window.alert("Cannot log in user: " + userName);
+                }
             }
         }
 

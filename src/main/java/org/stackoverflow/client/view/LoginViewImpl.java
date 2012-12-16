@@ -44,7 +44,7 @@ public class LoginViewImpl extends Composite implements LoginView {
         horiz.add(newQ);
 
         _panel.add(horiz);
-        _panel.add(passwordField);
+//        _panel.add(passwordField);
         viewport.add(_panel);
         initWidget(viewport);
     }

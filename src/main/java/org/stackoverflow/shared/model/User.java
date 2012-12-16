@@ -42,11 +42,7 @@ public class User implements IsSerializable {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
-                .add("name", name)
-                .add("userName", _userName)
-                .add("id", id)
-                .toString();
+        return name;
     }
 
     @Override
