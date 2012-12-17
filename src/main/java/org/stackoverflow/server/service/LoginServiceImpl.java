@@ -1,6 +1,5 @@
 package org.stackoverflow.server.service;
 
-import com.google.common.base.Preconditions;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.slf4j.Logger;
@@ -43,7 +42,7 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
 
     @Override
     public User loginFromSessionServer() {
-        return getUserAlreadyFromSession();
+        return getUserAlreadyFromSession(this.getThreadLocalRequest());
     }
 
     @Override
@@ -57,11 +56,11 @@ public class LoginServiceImpl extends RemoteServiceServlet implements LoginServi
         return false;
     }
 
-    private User getUserAlreadyFromSession() {
+    public static User getUserAlreadyFromSession(HttpServletRequest threadLocalRequest) {
         User user = null;
-        HttpServletRequest httpServletRequest = this.getThreadLocalRequest();
+        HttpServletRequest httpServletRequest = threadLocalRequest;
         HttpSession session = httpServletRequest.getSession();
-        Object userObj = session.getAttribute("user");
+        Object userObj = session.getAttribute(LOGGED_IN_USER);
         if (userObj != null && userObj instanceof User) {
             user = (User) userObj;
         }

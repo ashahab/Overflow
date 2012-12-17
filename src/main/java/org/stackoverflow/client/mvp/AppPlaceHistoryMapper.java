@@ -5,6 +5,7 @@ import com.google.gwt.place.shared.WithTokenizers;
 import org.stackoverflow.client.places.AskQuestionPlace;
 import org.stackoverflow.client.places.LoginPlace;
 import org.stackoverflow.client.places.SearchPlace;
+import org.stackoverflow.client.places.ViewQuestionPlace;
 
 
 /**
@@ -13,6 +14,6 @@ import org.stackoverflow.client.places.SearchPlace;
  * annotation or by extending PlaceHistoryMapperWithFactory and creating a
  * separate TokenizerFactory.
  */
-@WithTokenizers( {LoginPlace.Tokenizer.class, SearchPlace.Tokenizer.class, AskQuestionPlace.Tokenizer.class})
+@WithTokenizers( {LoginPlace.Tokenizer.class, SearchPlace.Tokenizer.class, AskQuestionPlace.Tokenizer.class, ViewQuestionPlace.Tokenizer.class})
 public interface AppPlaceHistoryMapper extends PlaceHistoryMapper {
 }

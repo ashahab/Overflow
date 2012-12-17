@@ -11,6 +11,7 @@ import java.util.List;
  * @author ashahab
  */
 public class Question extends HasDateBase implements HasDate, HasAuthor, IsSerializable {
+  private String id;
   private String query;
   private String description;
   private Boolean answered;
@@ -21,7 +22,15 @@ public class Question extends HasDateBase implements HasDate, HasAuthor, IsSeria
     return comments;
   }
 
-  public void setComments(List<Comment> comments) {
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setComments(List<Comment> comments) {
     this.comments = comments;
   }
 

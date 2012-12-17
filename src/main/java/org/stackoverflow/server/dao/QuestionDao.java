@@ -1,15 +1,14 @@
 package org.stackoverflow.server.dao;
 
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.RelationshipType;
-import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.*;
 import org.neo4j.graphdb.index.Index;
 import org.neo4j.graphdb.index.ReadableIndex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stackoverflow.shared.model.Question;
 import org.stackoverflow.shared.model.User;
+
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,9 +19,24 @@ import org.stackoverflow.shared.model.User;
  */
 public class QuestionDao {
 
-    public static final String INDEX_NAME = "nodes";
     public static Logger _logger = LoggerFactory.getLogger(QuestionDao.class);
     private ReadableIndex<Node> _index;
+
+    public Question getQuestion(long questionId) {
+        Node questionNode = _graphDb.getNodeById(questionId);
+        return nodeToQuestion(questionNode);
+    }
+
+    private Question nodeToQuestion(Node questionNode) {
+
+        Question question = new Question();
+        question.setId(questionNode.getId() + "");
+        question.setQuery((String)questionNode.getProperty(QUERY_KEY));
+        question.setDescription((String)questionNode.getProperty("description"));
+        question.setUser(nodeToUser(questionNode.getSingleRelationship(RelTypes.USER, Direction.OUTGOING).getEndNode()));
+        question.setPosted(new Date((Long)questionNode.getProperty("posted")));
+        return question;
+    }
 
     public static enum RelTypes implements RelationshipType
     {
@@ -31,6 +45,8 @@ public class QuestionDao {
     }
     public static final String DB_PATH = "neo4j-store";
     public static final String USERNAME_KEY = "username";
+    public static final String QUERY_KEY = "query";
+
     private GraphDatabaseService _graphDb;
 //    private Index<Node> _nodeIndex;
 
@@ -40,8 +56,16 @@ public class QuestionDao {
                 .getNodeAutoIndexer()
                 .getAutoIndex();
     }
+
     public Question save (Question question){
         //create a question node, and link it to a corresponding user node
+        Node node = _graphDb.createNode();
+        node.setProperty(QUERY_KEY, question.getQuery());
+        node.setProperty("description", question.getDescription());
+        node.setProperty("posted", question.postedOn().getTime());
+        Node userNode = _graphDb.getNodeById(Long.parseLong(question.author().getId()));
+        node.createRelationshipTo(userNode, RelTypes.USER);
+        question.setId(node.getId() + "");
         return  question;
     }
 

@@ -5,6 +5,7 @@ import com.google.web.bindery.event.shared.EventBus;
 import org.stackoverflow.client.view.AskQuestionView;
 import org.stackoverflow.client.view.LoginView;
 import org.stackoverflow.client.view.SearchView;
+import org.stackoverflow.client.view.ViewQuestionView;
 
 
 /**
@@ -22,5 +23,8 @@ public interface ClientFactory {
     AskQuestionView getAskQuestionView();
 
     LoginView getLoginView();
+
+    ViewQuestionView getViewQuestionView();
+
 
 }

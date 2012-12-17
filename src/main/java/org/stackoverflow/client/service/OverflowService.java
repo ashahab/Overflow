@@ -2,6 +2,7 @@ package org.stackoverflow.client.service;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import org.stackoverflow.shared.model.Question;
 import org.stackoverflow.shared.model.User;
 
 /**
@@ -14,6 +15,7 @@ import org.stackoverflow.shared.model.User;
 @RemoteServiceRelativePath("overflowService")
 public interface OverflowService extends RemoteService {
     User login(String userName);
-
+    Question postQuestion(String question, String description);
     void createUsers();
+    Question findQuestion(String questionId);
 }

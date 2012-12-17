@@ -35,4 +35,9 @@ public class ClientFactoryImpl implements ClientFactory {
     public LoginView getLoginView() {
         return new LoginViewImpl();
     }
+
+    @Override
+    public ViewQuestionView getViewQuestionView() {
+        return new ViewQuestionViewImpl();
+    }
 }

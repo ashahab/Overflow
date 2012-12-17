@@ -11,7 +11,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.stackoverflow.client.service.OverflowService;
 import org.stackoverflow.server.dao.QuestionDao;
+import org.stackoverflow.shared.model.Question;
 import org.stackoverflow.shared.model.User;
+
+import java.util.Date;
 
 /**
  * Created with IntelliJ IDEA.
@@ -23,6 +26,7 @@ import org.stackoverflow.shared.model.User;
 public class OverflowServiceImpl extends RemoteServiceServlet implements OverflowService {
     public static final String LOGGED_IN_USER = "logged_in_user";
     private Logger _logger = LoggerFactory.getLogger(OverflowServiceImpl.class);
+
     @Override
     public User login(String userName) {
         GraphDatabaseService graphDatabaseService
@@ -35,14 +39,37 @@ public class OverflowServiceImpl extends RemoteServiceServlet implements Overflo
     }
 
     @Override
+    public Question postQuestion(String questionName, String description) {
+        GraphDatabaseService graphDatabaseService
+                = GraphDbService.getGraphDb();
+        Transaction tx = graphDatabaseService.beginTx();
+        try {
+            QuestionDao dao = new QuestionDao(graphDatabaseService);
+            Question question = new Question();
+            question.setQuery(questionName);
+            question.setDescription(description);
+            User user = LoginServiceImpl.getUserAlreadyFromSession(this.getThreadLocalRequest());
+            question.setUser(user);
+            question.setPosted(new Date());
+            question = dao.save(question);
+            tx.success();
+            return question;
+        } catch (Throwable t) {
+            tx.failure();
+            throw new RuntimeException(t);
+        } finally {
+            tx.finish();
+        }
+    }
+
+    @Override
     public void createUsers() {
         GraphDatabaseService graphDb
                 = GraphDbService.getGraphDb();
         Transaction tx = graphDb.beginTx();
 
 
-        try
-        {
+        try {
             QuestionDao dao = new QuestionDao(graphDb);
 
             // Create users sub reference node
@@ -50,26 +77,30 @@ public class OverflowServiceImpl extends RemoteServiceServlet implements Overflo
             graphDb.getReferenceNode().createRelationshipTo(
                     usersReferenceNode, QuestionDao.RelTypes.USERS_REFERENCE);
             // Create some users and index their names with the IndexService
-            for ( int id = 0; id < 100; id++ )
-            {
+            for (int id = 0; id < 100; id++) {
                 Node userNode = dao.createAndIndexUser(dao.idToUserName(id));
-                usersReferenceNode.createRelationshipTo( userNode,
-                        QuestionDao.RelTypes.USER );
+                usersReferenceNode.createRelationshipTo(userNode,
+                        QuestionDao.RelTypes.USER);
             }
             // END SNIPPET: addUsers
-            _logger.debug( "Users created" );
-
+            _logger.debug("Users created");
 
 
             // Delete the persons and remove them from the index
-            for (int i = 0; i < 100; i++){
+            for (int i = 0; i < 100; i++) {
                 _logger.debug("User: " + dao.findUser(dao.idToUserName(i)).getUserName());
             }
             tx.success();
-        }
-        finally
-        {
+        } finally {
             tx.finish();
         }
+    }
+
+    @Override
+    public Question findQuestion(String questionId) {
+        GraphDatabaseService graphDb
+                = GraphDbService.getGraphDb();
+        QuestionDao dao = new QuestionDao(graphDb);
+        return dao.getQuestion(Long.parseLong(questionId));
     }
 }

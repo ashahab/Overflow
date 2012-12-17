@@ -22,8 +22,8 @@ public class GraphDbService implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         _graphDb = new GraphDatabaseFactory().
                 newEmbeddedDatabaseBuilder(QuestionDao.DB_PATH).
-                setConfig( GraphDatabaseSettings.node_keys_indexable, QuestionDao.USERNAME_KEY ).
-                setConfig( GraphDatabaseSettings.relationship_keys_indexable, "relProp1,relProp2" ).
+                setConfig( GraphDatabaseSettings.node_keys_indexable, QuestionDao.USERNAME_KEY + "," + QuestionDao.QUERY_KEY).
+//                setConfig( GraphDatabaseSettings.relationship_keys_indexable, "relProp1,relProp2" ).
                 setConfig( GraphDatabaseSettings.node_auto_indexing, "true" ).
                 setConfig( GraphDatabaseSettings.relationship_auto_indexing, "true" ).
                 newGraphDatabase();
