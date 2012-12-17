@@ -17,15 +17,15 @@ import com.google.gwt.user.client.ui.IsWidget;
 public interface ViewQuestionView extends IsWidget{
     public void setPresenter(Presenter presenter);
 
-    HasText getQueryLabel();
+    HTML getQueryLabel();
 
-    HasText getDescLabel();
+    HTML getDescLabel();
 
     HasClickHandlers getEditButton();
 
-    HasText getPostedLabel();
+    HTML getPostedLabel();
 
-    HasText getUserLabel();
+    HTML getUserLabel();
 
     public interface Presenter {
         void goTo(Place place);

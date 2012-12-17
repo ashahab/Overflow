@@ -47,10 +47,10 @@ public class ViewQuestionActivity extends AbstractActivity implements ViewQuesti
 
             @Override
             public void onSuccess(Question question) {
-                view.getQueryLabel().setText(question.getQuery());
-                view.getDescLabel().setText(question.getDescription());
-                view.getPostedLabel().setText(question.postedOn().toString());
-                view.getUserLabel().setText(question.author().getName());
+                view.getQueryLabel().setHTML(question.getQuery());
+                view.getDescLabel().setHTML(question.getDescription());
+                view.getPostedLabel().setHTML(question.postedOn().toString());
+                view.getUserLabel().setHTML(question.author().getName());
                 view.getEditButton().addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
