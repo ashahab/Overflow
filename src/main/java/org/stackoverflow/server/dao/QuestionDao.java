@@ -70,6 +70,7 @@ public class QuestionDao {
         }
         node.setProperty(QUERY_KEY, question.getQuery());
         node.setProperty("description", question.getDescription());
+
         question.setId(node.getId() + "");
         return  question;
     }

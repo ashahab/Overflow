@@ -24,8 +24,17 @@ public class ViewQuestionViewImpl extends Composite implements ViewQuestionView 
     }
     public ViewQuestionViewImpl() {
         VerticalLayoutContainer _panel = new VerticalLayoutContainer();
+        HorizontalPanel queryPanel = new HorizontalPanel();
+
         _queryLabel = new HTML();
+        queryPanel.add(new HTML("<h1>Query:</h1>"));
+        queryPanel.add(_queryLabel);
+
+        HorizontalPanel descPanel = new HorizontalPanel();
         _descLabel = new HTML();
+        descPanel.add(new HTML("<h1>Description:</h1>"));
+        descPanel.add(_descLabel);
+
         _postedLabel = new HTML();
         HorizontalPanel postedPanel = new HorizontalPanel();
         postedPanel.add(new HTML("<h1>Posted:</h1>"));
@@ -35,8 +44,8 @@ public class ViewQuestionViewImpl extends Composite implements ViewQuestionView 
         userPanel.add(new HTML("<h1>User:</h1>"));
         userPanel.add(_userLabel);
         _editButton = new Button("Edit");
-        _panel.add(_queryLabel);
-        _panel.add(_descLabel);
+        _panel.add(queryPanel);
+        _panel.add(descPanel);
 
         _panel.add(postedPanel);
         _panel.add(userPanel);

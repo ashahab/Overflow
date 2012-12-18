@@ -111,7 +111,9 @@ public class OverflowServiceImpl extends RemoteServiceServlet implements Overflo
         Transaction tx = graphDb.beginTx();
         try {
             QuestionDao dao = new QuestionDao(graphDb);
-            return dao.save(question);
+            Question saved = dao.save(question);
+            tx.success();
+            return saved;
         } catch (Throwable t) {
             tx.failure();
             throw new RuntimeException(t);
