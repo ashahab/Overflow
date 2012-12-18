@@ -46,7 +46,7 @@ public class ViewQuestionActivity extends AbstractActivity implements ViewQuesti
             }
 
             @Override
-            public void onSuccess(Question question) {
+            public void onSuccess(final Question question) {
                 view.getQueryLabel().setHTML(question.getQuery());
                 view.getDescLabel().setHTML(question.getDescription());
                 view.getPostedLabel().setHTML(question.postedOn().toString());
@@ -54,7 +54,7 @@ public class ViewQuestionActivity extends AbstractActivity implements ViewQuesti
                 view.getEditButton().addClickHandler(new ClickHandler() {
                     @Override
                     public void onClick(ClickEvent clickEvent) {
-                        goTo(new AskQuestionPlace(""));
+                        goTo(new AskQuestionPlace(question.getId() + ""));
                     }
                 });
             }

@@ -20,4 +20,6 @@ public interface OverflowServiceAsync {
     void postQuestion(String question, String description, AsyncCallback<Question> async);
 
     void findQuestion(String questionId, AsyncCallback<Question> async);
+
+    void updateQuestion(Question question, AsyncCallback<Question> async);
 }

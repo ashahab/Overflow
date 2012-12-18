@@ -59,12 +59,17 @@ public class QuestionDao {
 
     public Question save (Question question){
         //create a question node, and link it to a corresponding user node
-        Node node = _graphDb.createNode();
+        Node node = null;
+        if(question.getId() == null || question.getId().isEmpty()){
+            node = _graphDb.createNode();
+            Node userNode = _graphDb.getNodeById(Long.parseLong(question.author().getId()));
+            node.createRelationshipTo(userNode, RelTypes.USER);
+            node.setProperty("posted", question.postedOn().getTime());
+        } else {
+            node = _graphDb.getNodeById(Long.parseLong(question.getId()));
+        }
         node.setProperty(QUERY_KEY, question.getQuery());
         node.setProperty("description", question.getDescription());
-        node.setProperty("posted", question.postedOn().getTime());
-        Node userNode = _graphDb.getNodeById(Long.parseLong(question.author().getId()));
-        node.createRelationshipTo(userNode, RelTypes.USER);
         question.setId(node.getId() + "");
         return  question;
     }

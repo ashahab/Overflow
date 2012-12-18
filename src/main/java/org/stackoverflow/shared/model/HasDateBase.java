@@ -16,4 +16,8 @@ public abstract class HasDateBase {
   public void setPosted(Date posted) {
     this.posted = posted;
   }
+
+  public HasDateBase() {
+      posted = new Date();
+  }
 }

@@ -16,7 +16,12 @@ public class AskQuestionPlace extends BaseProfilerPlace {
   public AskQuestionPlace(String token){
     _token = token;
   }
-  @Override
+
+    public String get_token() {
+        return _token;
+    }
+
+    @Override
   public Activity createActivity(ClientFactory clientFactory) {
     return new AskQuestionActivity(this, clientFactory);
   }

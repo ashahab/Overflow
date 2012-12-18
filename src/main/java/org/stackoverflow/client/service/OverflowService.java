@@ -18,4 +18,5 @@ public interface OverflowService extends RemoteService {
     Question postQuestion(String question, String description);
     void createUsers();
     Question findQuestion(String questionId);
+    Question updateQuestion(Question question);
 }

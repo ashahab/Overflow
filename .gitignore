@@ -4,3 +4,5 @@ target
 *.iml
 lib
 runtime
+overflow.log
+neo4j-store

@@ -26,9 +26,11 @@ import org.stackoverflow.shared.model.Question;
  */
 public class AskQuestionActivity extends AbstractActivity implements AskQuestionView.Presenter{
   private ClientFactory _clientFactory;
+  private AskQuestionPlace _place;
   private OverflowServiceAsync service = GWT.create(OverflowService.class);
   public AskQuestionActivity(AskQuestionPlace askQuestionPlace, ClientFactory clientFactory) {
     _clientFactory = clientFactory;
+    _place = askQuestionPlace;
   }
 
   @Override
@@ -37,6 +39,7 @@ public class AskQuestionActivity extends AbstractActivity implements AskQuestion
     //set the
     view.setPresenter(this);
     containerWidget.setWidget(view.asWidget());
+    if(_place.get_token().equals("question")){
     view.getButton().addClickHandler(new ClickHandler() {
       @Override
       public void onClick(ClickEvent event) {
@@ -59,6 +62,41 @@ public class AskQuestionActivity extends AbstractActivity implements AskQuestion
 
       }
     });
+    } else {
+
+        service.findQuestion(_place.get_token(), new AsyncCallback<Question>() {
+            @Override
+            public void onFailure(Throwable throwable) {
+                Window.alert(throwable.toString());
+            }
+
+            @Override
+            public void onSuccess(final Question question) {
+                view.getNameField().setValue(question.getQuery());
+                view.getEditor().setValue(question.getDescription());
+
+                view.getButton().addClickHandler(new ClickHandler() {
+                    @Override
+                    public void onClick(ClickEvent clickEvent) {
+                        //create a question with the
+                        question.setQuery(view.getNameField().getValue());
+                        question.setDescription(view.getEditor().getValue());
+                        service.updateQuestion(question, new AsyncCallback<Question>() {
+                            @Override
+                            public void onFailure(Throwable throwable) {
+                                Window.alert(throwable.toString());
+                            }
+
+                            @Override
+                            public void onSuccess(Question question) {
+                                goTo(new ViewQuestionPlace(question.getId()));
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
   }
 
   @Override

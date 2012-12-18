@@ -101,6 +101,22 @@ public class OverflowServiceImpl extends RemoteServiceServlet implements Overflo
         GraphDatabaseService graphDb
                 = GraphDbService.getGraphDb();
         QuestionDao dao = new QuestionDao(graphDb);
-        return dao.getQuestion(Long.parseLong(questionId));
+        return Preconditions.checkNotNull(dao.getQuestion(Long.parseLong(questionId)));
+    }
+
+    @Override
+    public Question updateQuestion(Question question) {
+        GraphDatabaseService graphDb
+                = GraphDbService.getGraphDb();
+        Transaction tx = graphDb.beginTx();
+        try {
+            QuestionDao dao = new QuestionDao(graphDb);
+            return dao.save(question);
+        } catch (Throwable t) {
+            tx.failure();
+            throw new RuntimeException(t);
+        } finally {
+            tx.finish();
+        }
     }
 }
